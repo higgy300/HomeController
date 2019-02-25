@@ -1,3 +1,34 @@
+/* --COPYRIGHT--,BSD
+ * Copyright (c) 2017, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * --/COPYRIGHT--*/
 /******************************************************************************
  * MSP432 Energy Meter Measurement Module
  *
@@ -20,100 +51,80 @@
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 
 /* Standard Includes */
+#include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "energy_meter.h"
+#include "cc3100_usage.h"
+#include "simplelink.h"
+#include "sl_common.h"
+#include "_data_pack_.h"
 
-/* Timer_A Continuous Mode Configuration Parameter */
-const Timer_A_UpModeConfig upModeConfig =
-{
-        TIMER_A_CLOCKSOURCE_ACLK,            // ACLK Clock Source
-        TIMER_A_CLOCKSOURCE_DIVIDER_1,       // ACLK/1 = 32Khz
-        16384,
-        TIMER_A_TAIE_INTERRUPT_DISABLE,      // Disable Timer ISR
-        TIMER_A_CCIE_CCR0_INTERRUPT_DISABLE, // Disable CCR0
-        TIMER_A_DO_CLEAR                     // Clear Counter
-};
-
-/* Timer_A Compare Configuration Parameter */
-const Timer_A_CompareModeConfig compareConfig =
-{
-        TIMER_A_CAPTURECOMPARE_REGISTER_1,          // Use CCR1
-        TIMER_A_CAPTURECOMPARE_INTERRUPT_DISABLE,   // Disable CCR interrupt
-        TIMER_A_OUTPUTMODE_SET_RESET,               // Toggle output but
-        16384                                       // 10ms Period
-};
+#define HANDHELD_DEVICE_IP_ADDR HOST_IP_ADDR
+#define ADC_14BIT_SAMPLERESOLUTION 16384
+#define Vref 3.3
+#define SAMPLE_LENGTH       128
 
 // Global variables
+//static uint8_t ADC_channel_selector 0;
 static uint16_t ADC_result_buffer[3];
+static uint16_t voltage_buffer[3];
+static uint16_t curr1_buffer[3];
+static uint16_t curr2_buffer[3];
+float ADC_normalized_buffer[3];
+static int i;
+//_controller_t ctrl_info;
+//_eMeter_t meter_info;
+//bool doneADC = false;
 
-int main(void)
-{
+/** MAIN **/
+void main(void) {
+
     /* Stop Watchdog  */
-    MAP_WDT_A_holdTimer();
+    WDT_A_holdTimer();
     Interrupt_enableSleepOnIsrExit();
 
-    /* Initialize buffer to 0 */
+
+    /* Enabling the FPU for floating point operation */
+    //FPU_enableModule();
+    //FPU_enableLazyStacking();
+
+    /* Store the addresses of the wifi packet structures for reuse */
+    //uint8_t *ctrl_ptr = &ctrl_info;
+    //uint8_t *meter_ptr = &meter_info;
+
+    /* Initialize ADC buffers to 0 */
     memset(ADC_result_buffer, 0x00, 3 * sizeof(uint16_t));
+    memset(voltage_buffer, 0x00, 3 * sizeof(uint16_t));
+    memset(curr1_buffer, 0x00, 3 * sizeof(uint16_t));
+    memset(curr2_buffer, 0x00, 3 * sizeof(uint16_t));
+    ADC_normalized_buffer[0] = 0.0;
+    ADC_normalized_buffer[1] = 0.0;
+    ADC_normalized_buffer[2] = 0.0;
+    i = 0;
 
-    /* Change ACLK () to REFO (32 KHz) to use Timer_A */
-    CS_initClockSignal(CS_ACLK, CS_REFOCLK_SELECT, CS_CLOCK_DIVIDER_1);
-    ADC14_setResolution(ADC_14BIT);
+    /* Initialize SPI to be used with WiFi */
+    //spi_Open(0,0);
 
-    /* Turn on ADC module */
-    ADC14_enableModule();
-    /* Configure ADC to use master clock, no prescalers, and no routing */
-    ADC14_initModule(ADC_CLOCKSOURCE_MCLK, ADC_PREDIVIDER_1, ADC_DIVIDER_1, ADC_NOROUTE);
+    /* Initialize CC3100 device for WiFi capability */
+    //initCC3100(Client);
 
-    /* Configuring GPIOs for Analog In */
-    GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P4,
-            GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN7,
-            GPIO_TERTIARY_MODULE_FUNCTION);
+    //meter_info.curr1 = 0;
+    //meter_info.curr2 = 0;
+    //meter_info.voltage = 0;
+    //meter_info.ctrl_acknowledged = false;
+    // How do I get energy meter's IP?
 
-    /* Configuring ADC Memory [0..2] with repeat mode and internal 3.3V
-     * reference */
-    ADC14_configureMultiSequenceMode(ADC_MEM0, ADC_MEM2, true);
-    ADC14_configureConversionMemory(ADC_MEM0, // A6 = P4.7
-            ADC_VREFPOS_EXTPOS_VREFNEG_EXTNEG,
-            ADC_INPUT_A6, ADC_NONDIFFERENTIAL_INPUTS);
-    ADC14_configureConversionMemory(ADC_MEM1, // A8 = P4.5
-            ADC_VREFPOS_EXTPOS_VREFNEG_EXTNEG,
-            ADC_INPUT_A8, ADC_NONDIFFERENTIAL_INPUTS);
-    ADC14_configureConversionMemory(ADC_MEM2, // A9 = P4.4
-            ADC_VREFPOS_EXTPOS_VREFNEG_EXTNEG,
-            ADC_INPUT_A9, ADC_NONDIFFERENTIAL_INPUTS);
-
-    /* Configuring Timer_A in continuous mode and sourced from ACLK */
-    Timer_A_configureUpMode(TIMER_A0_BASE, &upModeConfig);
-
-    /* Configuring Timer_A0 in CCR1 to trigger at 16000 (0.5s) */
-    Timer_A_initCompare(TIMER_A0_BASE, &compareConfig);
-
-    /* Configuring the sample trigger to be sourced from Timer_A0  and setting it
-     * to automatic iteration after it is triggered*/
-    ADC14_setSampleHoldTrigger(ADC_TRIGGER_SOURCE1, false);
-    //ADC14_setSampleHoldTime(ADC_PULSE_WIDTH_192, ADC_PULSE_WIDTH_192);
-
-    /* Enabling the interrupt when a conversion on channel 2 (end of sequence)
-     * is complete and enabling conversions */
-    ADC14_enableInterrupt(ADC_INT2);
-
-    /* Setting up the sample timer to automatically step through the sequence
-     * convert. */
-    ADC14_enableSampleTimer(ADC_AUTOMATIC_ITERATION);
+    /* Establish communication between energy meter and controller */
+    /*ctrl_info.meter_requesting = true;
+    SendData(ctrl_ptr, ctrl_info.ip_addr, sizeof(meter_info));
+    while(!meter_info.ctrl_acknowledged) {
+        ReceiveData(meter_ptr, sizeof(meter_info));
+    }*/
 
 
-    ADC14_enableConversion();
-
-    /* Enable ADC Interrupt */
-    Interrupt_enableInterrupt(INT_ADC14);
-    Interrupt_enableMaster();
-
-    /* Starting the Timer */
-    Timer_A_startCounter(TIMER_A0_BASE, TIMER_A_UP_MODE);
-
-    /* Triggering the start of the sample */
-    //ADC14_enableConversion();
-    //ADC14_toggleConversionTrigger();
+    /* Initialize ADC to measure Voltage and currents */
+    init_EnergyMeter();
 
     while(1) {
         PCM_gotoLPM0();
@@ -125,9 +136,8 @@ int main(void)
  * grabbed and placed in resultsBuffer. */
 void ADC14_IRQHandler(void) {
     uint64_t status;
-
     /* Returns the status of a the ADC interrupt register masked with the
-     * enabled interrupts. When the ADC_MEM2 location finishes a conversion 
+     * enabled interrupts. When the ADC_MEM2 location finishes a conversion
      * cycle, the ADC_INT0 interrupt will be set. */
     status = ADC14_getEnabledInterruptStatus();
 
@@ -136,9 +146,19 @@ void ADC14_IRQHandler(void) {
     ADC14_clearInterruptFlag(status);
 
     // Compare the status and interrupt flag we are looking for
-    if(status & ADC_INT2) 
+    if(status & ADC_INT2) {
         /* Returns the conversion results of Vin, I1, I2 and stores it in the
          * buffer. */
         ADC14_getMultiSequenceResult(ADC_result_buffer);
+
+        voltage_buffer[0] = ADC_result_buffer[0];
+        curr1_buffer[0] = ADC_result_buffer[1];
+        curr2_buffer[0] = ADC_result_buffer[2];
+        ADC_normalized_buffer[0] = (ADC_result_buffer[0] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
+        ADC_normalized_buffer[1] = (ADC_result_buffer[1] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
+        ADC_normalized_buffer[2] = (ADC_result_buffer[2] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
     }
+}
+
+
 
