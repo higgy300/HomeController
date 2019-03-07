@@ -1,0 +1,1038 @@
+******************************************************************************
+                  TI ARM Linker PC v18.1.5                     
+******************************************************************************
+>> Linked Wed Feb 27 22:16:43 2019
+
+OUTPUT FILE NAME:   <test2.out>
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00006959
+
+
+MEMORY CONFIGURATION
+
+         name            origin    length      used     unused   attr    fill
+----------------------  --------  ---------  --------  --------  ----  --------
+  MAIN                  00000000   00040000  000072e8  00038d18  R  X
+  INFO                  00200000   00004000  00000000  00004000  R  X
+  SRAM_CODE             01000000   00010000  00000f7c  0000f084  RW X
+  SRAM_DATA             20000000   00010000  00000f7c  0000f084  RW  
+
+
+SEGMENT ALLOCATION MAP
+
+run origin  load origin   length   init length attrs members
+----------  ----------- ---------- ----------- ----- -------
+00000000    00000000    000072e8   000072e8    r-x
+  00000000    00000000    000000e4   000000e4    r-- .intvecs
+  000000e4    000000e4    00006ed0   00006ed0    r-x .text
+  00006fb4    00006fb4    00000294   00000294    r-- .const
+  00007248    00007248    000000a0   000000a0    r-- .cinit
+20000000    20000000    00000d7c   00000000    rw-
+  20000000    20000000    00000800   00000000    rw- .sysmem
+  20000800    20000800    0000036c   00000000    rw- .bss
+  20000b6c    20000b6c    00000210   00000000    rw- .data
+2000fe00    2000fe00    00000200   00000000    rw-
+  2000fe00    2000fe00    00000200   00000000    rw- .stack
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+.intvecs   0    00000000    000000e4     
+                  00000000    000000e4     startup_msp432p401r_ccs.obj (.intvecs:retain)
+
+.text      0    000000e4    00006ed0     
+                  000000e4    00000a5e     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:__TI_printfi)
+                  00000b42    00000002     startup_msp432p401r_ccs.obj (.text:Default_Handler)
+                  00000b44    00000634     driver.obj (.text:_SlDrvMsgRead)
+                  00001178    000004e4     driver.obj (.text:_SlAsyncEventGenericHandler)
+                  0000165c    00000270     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_a)
+                  000018cc    00000244     wlan.obj (.text:sl_WlanConnect)
+                  00001b10    00000214     driver.obj (.text:_SlDrvRxHdrRead)
+                  00001d24    00000208     driver.obj (.text:_SlDrvDataReadOp)
+                  00001f2c    00000208     driver.obj (.text:_SlDrvReleasePoolObj)
+                  00002134    00000208     driver.obj (.text:_SlDrvWaitForPoolObj)
+                  0000233c    000001f8     driver.obj (.text:_SlDrvMsgWrite)
+                  00002534    000001e4     cc3100_usage.obj (.text:configureSimpleLinkToDefaultState)
+                  00002718    000001d0     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_g)
+                  000028e8    000001cc     driver.obj (.text:_SlDrvDataWriteOp)
+                  00002ab4    000001b6     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_add_t2.asm.obj (.text)
+                  00002c6a    00000002     board.obj (.text:EUSCIA0_IRQHandler)
+                  00002c6c    000001a8     cc3100_usage.obj (.text:BsdUdpServer)
+                  00002e14    00000194     socket.obj (.text:sl_Select)
+                  00002fa8    00000170     driver.obj (.text:_SlFindAndSetActiveObj)
+                  00003118    0000013c     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_e)
+                  00003254    0000013c     spi_cc3100.obj (.text:spi_Open)
+                  00003390    00000136     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_div_t2.asm.obj (.text)
+                  000034c6    00000002     board.obj (.text:PORT1_IRQHandler)
+                  000034c8    0000012c     device.obj (.text:sl_Stop)
+                  000035f4    00000124     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:fcvt)
+                  00003718    00000120     socket.obj (.text:sl_SendTo)
+                  00003838    00000118     driver.obj (.text:_SlDrvClassifyRxMsg)
+                  00003950    00000118     socket.obj (.text:sl_RecvFrom)
+                  00003a68    00000114     rtsv7M4_T_le_v4SPD16_eabi.lib : fputs.c.obj (.text:fputs)
+                  00003b7c    00000110                                   : s_scalbn.c.obj (.text:scalbn)
+                  00003c8c    00000110     device.obj (.text:sl_Start)
+                  00003d9c    00000104     driver.obj (.text:_SlDrvMsgReadCmdCtx)
+                  00003ea0    000000fe     netapp.obj (.text:_SlDrvNetAppEventHandler)
+                  00003f9e    000000fc     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_mul_t2.asm.obj (.text)
+                  0000409a    00000002                                   : _lock.c.obj (.text:_nop)
+                  0000409c    000000f0     driver.obj (.text:_SlDrvDriverCBInit)
+                  0000418c    000000e8     driver.obj (.text:_SlDrvMsgReadSpawnCtx)
+                  00004274    000000dc     rtsv7M4_T_le_v4SPD16_eabi.lib : setvbuf.c.obj (.text:setvbuf)
+                  00004350    000000d8                                   : memory.c.obj (.text:free)
+                  00004428    000000d4     system_msp432p401r.obj (.text:SystemInit)
+                  000044fc    000000d4     netapp.obj (.text:_sl_HandleAsync_DnsGetHostByService)
+                  000045d0    000000cc     cc3100_usage.obj (.text:initCC3100)
+                  0000469c    000000c8     netapp.obj (.text:_sl_HandleAsync_DnsGetHostByName)
+                  00004764    000000c8     netapp.obj (.text:_sl_HandleAsync_PingResponse)
+                  0000482c    000000c8     socket.obj (.text:_sl_TruncatePayloadByProtocol)
+                  000048f4    000000c4     driver.obj (.text:_SlRemoveFromList)
+                  000049b8    000000bc     main.obj (.text:main)
+                  00004a74    000000b8     cc3100_usage.obj (.text:BsdUdpClient)
+                  00004b2c    000000b8     driver.obj (.text:_SlDrvCmdOp)
+                  00004be4    000000b8     device.obj (.text:_sl_HandleAsync_InitComplete)
+                  00004c9c    000000b8     netapp.obj (.text:sl_NetAppMDNSRegisterUnregisterService)
+                  00004d54    000000b4     socket.obj (.text:_sl_HandleAsync_Connect)
+                  00004e08    000000b1     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_ltostr)
+                  00004eb9    00000001     --HOLE-- [fill = 0]
+                  00004eba    00000002                                   : div0.asm.obj (.text)
+                  00004ebc    000000a8     driver.obj (.text:_SlDrvDriverCBDeinit)
+                  00004f64    000000a8     device.obj (.text:sl_DevGet)
+                  0000500c    0000009c     rtsv7M4_T_le_v4SPD16_eabi.lib : memcpy_t2.asm.obj (.text)
+                  000050a8    00000098     socket.obj (.text:_sl_HandleAsync_Accept)
+                  00005140    00000096     rtsv7M4_T_le_v4SPD16_eabi.lib : ull_div_t2.asm.obj (.text)
+                  000051d6    00000002     --HOLE-- [fill = 0]
+                  000051d8    0000008c     socket.obj (.text:_sl_HandleAsync_Select)
+                  00005264    0000008c     rtsv7M4_T_le_v4SPD16_eabi.lib : fputc.c.obj (.text:fputc)
+                  000052f0    0000008c     socket.obj (.text:sl_Bind)
+                  0000537c    00000088     device.obj (.text:_sl_HandleAsync_Stop)
+                  00005404    00000088     cc3100_usage.obj (.text:establishConnectionWithAP)
+                  0000548c    00000086     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_cmp_t2.asm.obj (.text:__aeabi_cdcmple)
+                  00005512    00000086                                   : fd_cmp_t2.asm.obj (.text:__aeabi_cdrcmple)
+                  00005598    00000080     driver.obj (.text:_SlDrvObjInit)
+                  00005618    0000007a     rtsv7M4_T_le_v4SPD16_eabi.lib : memset_t2.asm.obj (.text)
+                  00005692    00000002     --HOLE-- [fill = 0]
+                  00005694    00000078                                   : memory.c.obj (.text:malloc)
+                  0000570c    00000074                                   : fclose.c.obj (.text:__TI_closefile)
+                  00005780    00000074     spi_cc3100.obj (.text:spi_Read)
+                  000057f4    0000006e     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_mcpy)
+                  00005862    00000002     --HOLE-- [fill = 0]
+                  00005864    0000006c     nonos.obj (.text:_SlNonOsMainLoopTask)
+                  000058d0    0000006c     netcfg.obj (.text:sl_NetCfgSet)
+                  0000593c    0000006c     socket.obj (.text:sl_SetSockOpt)
+                  000059a8    0000006c     wlan.obj (.text:sl_WlanSet)
+                  00005a14    0000006c     spi_cc3100.obj (.text:spi_Write)
+                  00005a80    00000068     rtsv7M4_T_le_v4SPD16_eabi.lib : hostlseek.c.obj (.text:HOSTlseek)
+                  00005ae8    00000068                                   : hostrename.c.obj (.text:HOSTrename)
+                  00005b50    00000068                                   : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  00005bb8    00000068                                   : printf.c.obj (.text:printf)
+                  00005c20    00000068     netapp.obj (.text:sl_NetAppSendTokenValue)
+                  00005c88    00000064     device.obj (.text:_SlDrvDeviceEventHandler)
+                  00005cec    00000064     rtsv7M4_T_le_v4SPD16_eabi.lib : s_frexp.c.obj (.text:frexp)
+                  00005d50    00000064                                   : fseek.c.obj (.text:fseek)
+                  00005db4    00000064     wlan.obj (.text:sl_WlanPolicySet)
+                  00005e18    00000062     rtsv7M4_T_le_v4SPD16_eabi.lib : _io_perm.c.obj (.text:__TI_wrt_ok)
+                  00005e7a    00000002     --HOLE-- [fill = 0]
+                  00005e7c    00000060                                   : hostopen.c.obj (.text:HOSTopen)
+                  00005edc    0000005c     nonos.obj (.text:_SlNonOsSemGet)
+                  00005f38    0000005c     rtsv7M4_T_le_v4SPD16_eabi.lib : close.c.obj (.text:close)
+                  00005f94    0000005c     socket.obj (.text:sl_Socket)
+                  00005ff0    00000058     rtsv7M4_T_le_v4SPD16_eabi.lib : hostread.c.obj (.text:HOSTread)
+                  00006048    00000058                                   : hostwrite.c.obj (.text:HOSTwrite)
+                  000060a0    00000058     cc3100_usage.obj (.text:SimpleLinkWlanEventHandler)
+                  000060f8    00000058     device.obj (.text:_sl_GetStartResponseConvert)
+                  00006150    00000058     wlan.obj (.text:sl_WlanRxFilterSet)
+                  000061a8    00000056     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_f)
+                  000061fe    00000002     --HOLE-- [fill = 0]
+                  00006200    00000054     nonos.obj (.text:_SlNonOsSpawn)
+                  00006254    00000054     rtsv7M4_T_le_v4SPD16_eabi.lib : ltoa.c.obj (.text:ltoa)
+                  000062a8    00000052                                   : _printfi.c.obj (.text:_ecpy)
+                  000062fa    00000050     socket.obj (.text:_sl_BuildAddress)
+                  0000634a    00000002     --HOLE-- [fill = 0]
+                  0000634c    0000004c     driver.obj (.text:_SlDrvRxIrqHandler)
+                  00006398    0000004c     rtsv7M4_T_le_v4SPD16_eabi.lib : fflush.c.obj (.text:__TI_doflush)
+                  000063e4    0000004c                                   : atoi.c.obj (.text:atoi)
+                  00006430    00000048     board.obj (.text:CC3100_InterruptEnable)
+                  00006478    00000048     driver.obj (.text:_SlDrvBasicCmd)
+                  000064c0    00000048     driver.obj (.text:_SlDrvCmdSend)
+                  00006508    00000048     rtsv7M4_T_le_v4SPD16_eabi.lib : exit.c.obj (.text:exit)
+                  00006550    00000048                                   : fd_toi_t2.asm.obj (.text)
+                  00006598    00000044                                   : hostclose.c.obj (.text:HOSTclose)
+                  000065dc    00000044                                   : hostunlink.c.obj (.text:HOSTunlink)
+                  00006620    00000044     flowcont.obj (.text:_SlDrvFlowContDeinit)
+                  00006664    00000044     flowcont.obj (.text:_SlDrvFlowContInit)
+                  000066a8    00000044     rtsv7M4_T_le_v4SPD16_eabi.lib : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit:__TI_auto_init_nobinit_nopinit)
+                  000066ec    00000044                                   : getdevice.c.obj (.text:getdevice)
+                  00006730    00000042     driver.obj (.text:_SlDrvShiftDWord)
+                  00006772    00000042     socket.obj (.text:sl_Htonl)
+                  000067b4    00000040     cc3100_usage.obj (.text:SimpleLinkNetAppEventHandler)
+                  000067f4    0000003e     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_fcpy)
+                  00006832    0000003c     netapp.obj (.text:CopyPingResultsToReport)
+                  0000686e    00000002     --HOLE-- [fill = 0]
+                  00006870    0000003c     rtsv7M4_T_le_v4SPD16_eabi.lib : memory.c.obj (.text:minsert)
+                  000068ac    0000003c     socket.obj (.text:sl_Htons)
+                  000068e8    00000038     adc14.obj (.text:ADC14_getEnabledInterruptStatus)
+                  00006920    00000038     rtsv7M4_T_le_v4SPD16_eabi.lib : trgmsg.c.obj (.text:__TI_writemsg)
+                  00006958    00000038                                   : boot_cortex_m.c.obj (.text:_c_int00_noargs:_c_int00_noargs)
+                  00006990    00000038                                   : memory.c.obj (.text:minit)
+                  000069c8    00000036     netapp.obj (.text:sl_NetAppMDNSUnRegisterService)
+                  000069fe    00000036     rtsv7M4_T_le_v4SPD16_eabi.lib : strncpy.c.obj (.text:strncpy)
+                  00006a34    00000034                                   : fopen.c.obj (.text:__TI_cleanup)
+                  00006a68    00000034                                   : trgmsg.c.obj (.text:__TI_readmsg)
+                  00006a9c    00000030     adc14.obj (.text:ADC14_clearInterruptFlag)
+                  00006acc    00000030     board.obj (.text:CC3100_InterruptDisable)
+                  00006afc    00000030     board.obj (.text:PORT2_IRQHandler)
+                  00006b2c    00000030     rtsv7M4_T_le_v4SPD16_eabi.lib : getdevice.c.obj (.text:finddevice)
+                  00006b5c    00000030     socket.obj (.text:sl_Close)
+                  00006b8c    00000030     wlan.obj (.text:sl_WlanProfileDel)
+                  00006bbc    00000030     wlan.obj (.text:sl_WlanSetMode)
+                  00006bec    0000002e     rtsv7M4_T_le_v4SPD16_eabi.lib : i_tofd_t2.asm.obj (.text)
+                  00006c1a    00000002     --HOLE-- [fill = 0]
+                  00006c1c    0000002c     adc14.obj (.text:ADC14_getInterruptStatus)
+                  00006c48    0000002c     rtsv7M4_T_le_v4SPD16_eabi.lib : unlink.c.obj (.text:unlink)
+                  00006c74    00000028     board.obj (.text:Delay)
+                  00006c9c    00000028     socket.obj (.text:SL_FD_ISSET)
+                  00006cc4    00000028     rtsv7M4_T_le_v4SPD16_eabi.lib : lseek.c.obj (.text:lseek)
+                  00006cec    00000028                                   : memory.c.obj (.text:mremove)
+                  00006d14    00000028                                   : write.c.obj (.text:write)
+                  00006d3c    00000026     main.obj (.text:ADC14_IRQHandler)
+                  00006d62    00000002     --HOLE-- [fill = 0]
+                  00006d64    00000024     cc3100_usage.obj (.text:ReceiveData)
+                  00006d88    00000024     cc3100_usage.obj (.text:SendData)
+                  00006dac    00000024     wdt_a.obj (.text:WDT_A_holdTimer)
+                  00006dd0    00000024     driver.obj (.text:_SlDrvObjDeInit)
+                  00006df4    00000022     socket.obj (.text:SL_FD_SET)
+                  00006e16    00000020     rtsv7M4_T_le_v4SPD16_eabi.lib : memchr.c.obj (.text:memchr)
+                  00006e36    0000001c                                   : memccpy.c.obj (.text:memccpy)
+                  00006e52    00000018     nonos.obj (.text:_SlNonOsSemSet)
+                  00006e6a    00000002     --HOLE-- [fill = 0]
+                  00006e6c    00000018     board.obj (.text:registerInterruptHandler)
+                  00006e84    00000018     rtsv7M4_T_le_v4SPD16_eabi.lib : strcmp.c.obj (.text:strcmp)
+                  00006e9c    00000016                                   : strchr.c.obj (.text:strchr)
+                  00006eb2    00000014                                   : s_copysign.c.obj (.text:copysign)
+                  00006ec6    00000014                                   : strcpy.c.obj (.text:strcpy)
+                  00006eda    00000014                                   : strlen.c.obj (.text:strlen)
+                  00006eee    00000012                                   : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init_nomemset:__TI_zero_init_nomemset)
+                  00006f00    00000012                                   : wcslen.c.obj (.text:wcslen)
+                  00006f12    00000002     --HOLE-- [fill = 0]
+                  00006f14    00000010     board.obj (.text:CC3100_disable)
+                  00006f24    00000010     board.obj (.text:CC3100_enable)
+                  00006f34    00000010     socket.obj (.text:SL_FD_ZERO)
+                  00006f44    00000010     cc3100_usage.obj (.text:SimpleLinkSockEventHandler)
+                  00006f54    0000000e     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  00006f62    0000000c     startup_msp432p401r_ccs.obj (.text:Reset_Handler)
+                  00006f6e    0000000c     cc3100_usage.obj (.text:SimpleLinkHttpServerCallback)
+                  00006f7a    0000000c     wlan.obj (.text:sl_WlanDisconnect)
+                  00006f86    0000000c     spi_cc3100.obj (.text:spi_Close)
+                  00006f92    0000000a     cc3100_usage.obj (.text:SimpleLinkGeneralEventHandler)
+                  00006f9c    00000008     rtsv7M4_T_le_v4SPD16_eabi.lib : errno.c.obj (.text:__aeabi_errno_addr)
+                  00006fa4    00000004                                   : printf.c.obj (.text:_outc)
+                  00006fa8    00000004                                   : printf.c.obj (.text:_outs)
+                  00006fac    00000004                                   : pre_init.c.obj (.text:_system_pre_init)
+                  00006fb0    00000004                                   : exit.c.obj (.text:abort:abort)
+
+.const     0    00006fb4    00000294     
+                  00006fb4    00000101     rtsv7M4_T_le_v4SPD16_eabi.lib : ctype.c.obj (.const:.string:_ctypes_)
+                  000070b5    00000003     --HOLE-- [fill = 0]
+                  000070b8    000000b0     wlan.obj (.const:$P$T0$1)
+                  00007168    00000038     driver.obj (.const:_SlActionLookupTable)
+                  000071a0    0000002c     cc3100_usage.obj (.const:$P$T0$1)
+                  000071cc    00000014     cc3100_usage.obj (.const:$P$T1$2)
+                  000071e0    0000000c     cc3100_usage.obj (.const:$P$T2$3)
+                  000071ec    00000008     driver.obj (.const:g_H2NCnysPattern)
+                  000071f4    00000008     driver.obj (.const:g_H2NSyncPattern)
+                  000071fc    00000004     driver.obj (.const:$P$T0$1)
+                  00007200    00000004     socket.obj (.const:$P$T0$1)
+                  00007204    00000004     socket.obj (.const:$P$T1$2)
+                  00007208    00000004     wlan.obj (.const:$P$T1$2)
+                  0000720c    00000004     device.obj (.const:_SlDeviceGetCmdCtrl)
+                  00007210    00000004     netapp.obj (.const:_SlNetAppSendTokenValueCmdCtrl)
+                  00007214    00000004     netcfg.obj (.const:_SlNetCfgSetCmdCtrl)
+                  00007218    00000004     wlan.obj (.const:_SlPolicySetCmdCtrl)
+                  0000721c    00000004     wlan.obj (.const:_SlProfileDelCmdCtrl)
+                  00007220    00000004     socket.obj (.const:_SlRecvfomCmdCtrl)
+                  00007224    00000004     netapp.obj (.const:_SlRegisterServiceCtrl)
+                  00007228    00000004     wlan.obj (.const:_SlRxFilterSetCmdCtrl)
+                  0000722c    00000004     socket.obj (.const:_SlSelectCmdCtrl)
+                  00007230    00000004     socket.obj (.const:_SlSetSockOptCmdCtrl)
+                  00007234    00000004     socket.obj (.const:_SlSockCloseCmdCtrl)
+                  00007238    00000004     socket.obj (.const:_SlSockSocketCmdCtrl)
+                  0000723c    00000004     device.obj (.const:_SlStopCmdCtrl)
+                  00007240    00000004     wlan.obj (.const:_SlWlanCfgSetCmdCtrl)
+                  00007244    00000004     wlan.obj (.const:_SlWlanSetModeCmdCtrl)
+
+.cinit     0    00007248    000000a0     
+                  00007248    00000079     (.cinit..data.load) [load image, compression = lzss]
+                  000072c1    00000003     --HOLE-- [fill = 0]
+                  000072c4    0000000c     (__TI_handler_table)
+                  000072d0    00000008     (.cinit..bss.load) [load image, compression = zero_init]
+                  000072d8    00000010     (__TI_cinit_table)
+
+.init_array 
+*          0    00000000    00000000     UNINITIALIZED
+
+.binit     0    00000000    00000000     
+
+.sysmem    0    20000000    00000800     UNINITIALIZED
+                  20000000    00000008     rtsv7M4_T_le_v4SPD16_eabi.lib : memory.c.obj (.sysmem)
+                  20000008    000007f8     --HOLE--
+
+.bss       0    20000800    0000036c     UNINITIALIZED
+                  20000800    00000164     (.common:g_StatMem)
+                  20000964    00000120     rtsv7M4_T_le_v4SPD16_eabi.lib : trgmsg.c.obj (.bss:_CIOBUF_)
+                  20000a84    000000a0     (.common:__TI_tmpnams)
+                  20000b24    00000028     (.common:g__SlNonOsCB)
+                  20000b4c    0000000b     (.common:meter_info)
+                  20000b57    00000008     (.common:ctrl_info)
+                  20000b5f    00000008     (.common:parmbuf)
+                  20000b67    00000001     --HOLE--
+                  20000b68    00000004     cc3100_usage.obj (.bss)
+
+.data      0    20000b6c    00000210     UNINITIALIZED
+                  20000b6c    000000f0     rtsv7M4_T_le_v4SPD16_eabi.lib : defs.c.obj (.data:_ftable)
+                  20000c5c    00000078                                   : write.c.obj (.data:_device)
+                  20000cd4    00000050                                   : write.c.obj (.data:_stream)
+                  20000d24    00000014     cc3100_usage.obj (.data)
+                  20000d38    00000010     rtsv7M4_T_le_v4SPD16_eabi.lib : defs.c.obj (.data)
+                  20000d48    0000000c                                   : exit.c.obj (.data:$O1$$)
+                  20000d54    0000000c                                   : memory.c.obj (.data:$O1$$)
+                  20000d60    00000009     driver.obj (.data)
+                  20000d69    00000003     --HOLE--
+                  20000d6c    00000008     rtsv7M4_T_le_v4SPD16_eabi.lib : _lock.c.obj (.data:$O1$$)
+                  20000d74    00000004     board.obj (.data)
+                  20000d78    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : errno.c.obj (.data)
+
+.stack     0    2000fe00    00000200     UNINITIALIZED
+                  2000fe00    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : boot_cortex_m.c.obj (.stack)
+                  2000fe04    000001fc     --HOLE--
+
+MODULE SUMMARY
+
+       Module                        code    ro data   rw data
+       ------                        ----    -------   -------
+    .\
+       main.obj                      226     0         38     
+       system_msp432p401r.obj        212     0         0      
+       adc14.obj                     148     0         0      
+       wdt_a.obj                     36      0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        622     0         38     
+                                                              
+    .\WiFi\
+       driver.obj                    8274    76        730    
+       socket.obj                    2328    28        0      
+       cc3100_usage.obj              1694    76        48     
+       netapp.obj                    1268    8         0      
+       device.obj                    1248    8         0      
+       wlan.obj                      984     200       0      
+       spi_cc3100.obj                552     0         0      
+       nonos.obj                     308     0         80     
+       board.obj                     268     0         8      
+       flowcont.obj                  136     0         0      
+       netcfg.obj                    108     4         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        17168   400       866    
+                                                              
+    .\ccs\
+       startup_msp432p401r_ccs.obj   14      228       0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        14      228       0      
+                                                              
+    C:\ti\ccsv8\tools\compiler\ti-cgt-arm_18.1.5.LTS\lib\rtsv7M4_T_le_v4SPD16_eabi.lib
+       _printfi.c.obj                4867    0         0      
+       defs.c.obj                    0       0         832    
+       trgmsg.c.obj                  108     0         576    
+       memory.c.obj                  492     0         24     
+       write.c.obj                   40      0         400    
+       fd_add_t2.asm.obj             438     0         0      
+       fd_div_t2.asm.obj             310     0         0      
+       fputs.c.obj                   276     0         0      
+       s_scalbn.c.obj                272     0         0      
+       fd_cmp_t2.asm.obj             268     0         0      
+       ctype.c.obj                   0       257       0      
+       fd_mul_t2.asm.obj             252     0         0      
+       setvbuf.c.obj                 220     0         0      
+       memcpy_t2.asm.obj             156     0         0      
+       ull_div_t2.asm.obj            150     0         0      
+       fputc.c.obj                   140     0         0      
+       memset_t2.asm.obj             122     0         0      
+       fclose.c.obj                  116     0         0      
+       getdevice.c.obj               116     0         0      
+       hostopen.c.obj                96      0         16     
+       printf.c.obj                  112     0         0      
+       copy_decompress_lzss.c.obj    104     0         0      
+       hostlseek.c.obj               104     0         0      
+       hostrename.c.obj              104     0         0      
+       exit.c.obj                    76      0         24     
+       fseek.c.obj                   100     0         0      
+       s_frexp.c.obj                 100     0         0      
+       _io_perm.c.obj                98      0         0      
+       close.c.obj                   92      0         0      
+       hostread.c.obj                88      0         0      
+       hostwrite.c.obj               88      0         0      
+       ltoa.c.obj                    84      0         0      
+       atoi.c.obj                    76      0         0      
+       fflush.c.obj                  76      0         0      
+       fd_toi_t2.asm.obj             72      0         0      
+       autoinit.c.obj                68      0         0      
+       hostclose.c.obj               68      0         0      
+       hostunlink.c.obj              68      0         0      
+       boot_cortex_m.c.obj           56      0         0      
+       strncpy.c.obj                 54      0         0      
+       fopen.c.obj                   52      0         0      
+       i_tofd_t2.asm.obj             46      0         0      
+       unlink.c.obj                  44      0         0      
+       lseek.c.obj                   40      0         0      
+       memchr.c.obj                  32      0         0      
+       memccpy.c.obj                 28      0         0      
+       strcmp.c.obj                  24      0         0      
+       strchr.c.obj                  22      0         0      
+       s_copysign.c.obj              20      0         0      
+       strcpy.c.obj                  20      0         0      
+       strlen.c.obj                  20      0         0      
+       _lock.c.obj                   2       0         16     
+       copy_zero_init.c.obj          18      0         0      
+       wcslen.c.obj                  18      0         0      
+       errno.c.obj                   8       0         8      
+       copy_decompress_none.c.obj    14      0         0      
+       pre_init.c.obj                4       0         0      
+       div0.asm.obj                  2       0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        10541   257       1896   
+                                                              
+       Heap:                         0       0         4096   
+       Stack:                        0       0         1024   
+       Linker Generated:             0       157       0      
+    +--+-----------------------------+-------+---------+---------+
+       Grand Total:                  28345   1042      7920   
+
+
+LINKER GENERATED COPY TABLES
+
+__TI_cinit_table @ 000072d8 records: 2, size/record: 8, table size: 16
+	.data: load addr=00007248, load size=00000079 bytes, run addr=20000b6c, run size=00000210 bytes, compression=lzss
+	.bss: load addr=000072d0, load size=00000008 bytes, run addr=20000800, run size=0000036c bytes, compression=zero_init
+
+
+LINKER GENERATED HANDLER TABLE
+
+__TI_handler_table @ 000072c4 records: 3, size/record: 4, table size: 12
+	index: 0, handler: __TI_decompress_lzss
+	index: 1, handler: __TI_decompress_none
+	index: 2, handler: __TI_zero_init
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address   name                                  
+-------   ----                                  
+00006d3d  ADC14_IRQHandler                      
+00006d3d  ADC14_IRQHandler                      
+00006a9d  ADC14_clearInterruptFlag              
+000068e9  ADC14_getEnabledInterruptStatus       
+00006c1d  ADC14_getInterruptStatus              
+00000b43  AES256_IRQHandler                     
+00000b43  BusFault_Handler                      
+00006fb1  C$$EXIT                               
+0000694f  C$$IO$$                               
+00006acd  CC3100_InterruptDisable               
+00006431  CC3100_InterruptEnable                
+00006f15  CC3100_disable                        
+00006f25  CC3100_enable                         
+00000b43  COMP_E0_IRQHandler                    
+00000b43  COMP_E1_IRQHandler                    
+00000b43  CS_IRQHandler                         
+00006833  CopyPingResultsToReport               
+00000b43  DMA_ERR_IRQHandler                    
+00000b43  DMA_INT0_IRQHandler                   
+00000b43  DMA_INT1_IRQHandler                   
+00000b43  DMA_INT2_IRQHandler                   
+00000b43  DMA_INT3_IRQHandler                   
+00000b43  DebugMon_Handler                      
+00000b43  Default_Handler                       
+00006c75  Delay                                 
+00002c6b  EUSCIA0_IRQHandler                    
+00002c6b  EUSCIA0_IRQHandler                    
+00000b43  EUSCIA1_IRQHandler                    
+00000b43  EUSCIA2_IRQHandler                    
+00000b43  EUSCIA3_IRQHandler                    
+00000b43  EUSCIB0_IRQHandler                    
+00000b43  EUSCIB1_IRQHandler                    
+00000b43  EUSCIB2_IRQHandler                    
+00000b43  EUSCIB3_IRQHandler                    
+00000b43  FLCTL_IRQHandler                      
+00000b43  FPU_IRQHandler                        
+00006599  HOSTclose                             
+00005a81  HOSTlseek                             
+00005e7d  HOSTopen                              
+00005ff1  HOSTread                              
+00005ae9  HOSTrename                            
+000065dd  HOSTunlink                            
+00006049  HOSTwrite                             
+00000b43  HardFault_Handler                     
+00000b43  MemManage_Handler                     
+00000b43  NMI_Handler                           
+00000b43  PCM_IRQHandler                        
+000034c7  PORT1_IRQHandler                      
+000034c7  PORT1_IRQHandler                      
+00006afd  PORT2_IRQHandler                      
+00006afd  PORT2_IRQHandler                      
+00000b43  PORT3_IRQHandler                      
+00000b43  PORT4_IRQHandler                      
+00000b43  PORT5_IRQHandler                      
+00000b43  PORT6_IRQHandler                      
+00000b43  PSS_IRQHandler                        
+00000b43  PendSV_Handler                        
+00000b43  RTC_C_IRQHandler                      
+00006d65  ReceiveData                           
+00006f63  Reset_Handler                         
+00006c9d  SL_FD_ISSET                           
+00006df5  SL_FD_SET                             
+00006f35  SL_FD_ZERO                            
+00000b43  SVC_Handler                           
+00006d89  SendData                              
+00006f93  SimpleLinkGeneralEventHandler         
+00006f6f  SimpleLinkHttpServerCallback          
+000067b5  SimpleLinkNetAppEventHandler          
+00006f45  SimpleLinkSockEventHandler            
+000060a1  SimpleLinkWlanEventHandler            
+20000d34  SockIDRx                              
+20000d36  SockIDTx                              
+00000b43  SysTick_Handler                       
+00004429  SystemInit                            
+00000b43  T32_INT1_IRQHandler                   
+00000b43  T32_INT2_IRQHandler                   
+00000b43  T32_INTC_IRQHandler                   
+00000b43  TA0_0_IRQHandler                      
+00000b43  TA0_N_IRQHandler                      
+00000b43  TA1_0_IRQHandler                      
+00000b43  TA1_N_IRQHandler                      
+00000b43  TA2_0_IRQHandler                      
+00000b43  TA2_N_IRQHandler                      
+00000b43  TA3_0_IRQHandler                      
+00000b43  TA3_N_IRQHandler                      
+00000b43  UsageFault_Handler                    
+4000480c  WDTCTL_SYM                            
+00000b43  WDT_A_IRQHandler                      
+00006dad  WDT_A_holdTimer                       
+00007168  _SlActionLookupTable                  
+00001179  _SlAsyncEventGenericHandler           
+0000720c  _SlDeviceGetCmdCtrl                   
+00006479  _SlDrvBasicCmd                        
+00003839  _SlDrvClassifyRxMsg                   
+00004b2d  _SlDrvCmdOp                           
+000064c1  _SlDrvCmdSend                         
+00001d25  _SlDrvDataReadOp                      
+000028e9  _SlDrvDataWriteOp                     
+00005c89  _SlDrvDeviceEventHandler              
+00004ebd  _SlDrvDriverCBDeinit                  
+0000409d  _SlDrvDriverCBInit                    
+00006621  _SlDrvFlowContDeinit                  
+00006665  _SlDrvFlowContInit                    
+00000b45  _SlDrvMsgRead                         
+00003d9d  _SlDrvMsgReadCmdCtx                   
+0000418d  _SlDrvMsgReadSpawnCtx                 
+0000233d  _SlDrvMsgWrite                        
+00003ea1  _SlDrvNetAppEventHandler              
+00006dd1  _SlDrvObjDeInit                       
+00005599  _SlDrvObjInit                         
+00001f2d  _SlDrvReleasePoolObj                  
+00001b11  _SlDrvRxHdrRead                       
+0000634d  _SlDrvRxIrqHandler                    
+00006731  _SlDrvShiftDWord                      
+00002135  _SlDrvWaitForPoolObj                  
+00002fa9  _SlFindAndSetActiveObj                
+00007210  _SlNetAppSendTokenValueCmdCtrl        
+00007214  _SlNetCfgSetCmdCtrl                   
+00005865  _SlNonOsMainLoopTask                  
+00005edd  _SlNonOsSemGet                        
+00006e53  _SlNonOsSemSet                        
+00006201  _SlNonOsSpawn                         
+00007218  _SlPolicySetCmdCtrl                   
+0000721c  _SlProfileDelCmdCtrl                  
+00007220  _SlRecvfomCmdCtrl                     
+00007224  _SlRegisterServiceCtrl                
+000048f5  _SlRemoveFromList                     
+00007228  _SlRxFilterSetCmdCtrl                 
+0000722c  _SlSelectCmdCtrl                      
+00007230  _SlSetSockOptCmdCtrl                  
+00007234  _SlSockCloseCmdCtrl                   
+00007238  _SlSockSocketCmdCtrl                  
+0000723c  _SlStopCmdCtrl                        
+00007240  _SlWlanCfgSetCmdCtrl                  
+00007244  _SlWlanSetModeCmdCtrl                 
+20000964  __CIOBUF_                             
+20010000  __STACK_END                           
+00000200  __STACK_SIZE                          
+00000800  __SYSMEM_SIZE                         
+000072d8  __TI_CINIT_Base                       
+000072e8  __TI_CINIT_Limit                      
+000072c4  __TI_Handler_Table_Base               
+000072d0  __TI_Handler_Table_Limit              
+000066a9  __TI_auto_init_nobinit_nopinit        
+00006a35  __TI_cleanup                          
+20000d48  __TI_cleanup_ptr                      
+0000570d  __TI_closefile                        
+00005b51  __TI_decompress_lzss                  
+00006f55  __TI_decompress_none                  
+00006399  __TI_doflush                          
+20000d4c  __TI_dtors_ptr                        
+20000d50  __TI_enable_exit_profile_output       
+20000d38  __TI_ft_end                           
+ffffffff  __TI_pprof_out_hndl                   
+000000e5  __TI_printfi                          
+ffffffff  __TI_prof_data_size                   
+ffffffff  __TI_prof_data_start                  
+00006a69  __TI_readmsg                          
+00000000  __TI_static_base__                    
+20000a84  __TI_tmpnams                          
+00006921  __TI_writemsg                         
+00005e19  __TI_wrt_ok                           
+00006eef  __TI_zero_init_nomemset               
+0000548d  __aeabi_cdcmpeq                       
+0000548d  __aeabi_cdcmple                       
+00005513  __aeabi_cdrcmple                      
+00006551  __aeabi_d2iz                          
+00002abf  __aeabi_dadd                          
+00003391  __aeabi_ddiv                          
+00003f9f  __aeabi_dmul                          
+00002ab5  __aeabi_dsub                          
+00006f9d  __aeabi_errno_addr                    
+00006bed  __aeabi_i2d                           
+00004ebb  __aeabi_idiv0                         
+00004ebb  __aeabi_ldiv0                         
+00005619  __aeabi_memclr                        
+00005619  __aeabi_memclr4                       
+00005619  __aeabi_memclr8                       
+0000500d  __aeabi_memcpy                        
+0000500d  __aeabi_memcpy4                       
+0000500d  __aeabi_memcpy8                       
+0000561b  __aeabi_memset                        
+0000561b  __aeabi_memset4                       
+0000561b  __aeabi_memset8                       
+20000d44  __aeabi_stderr                        
+20000d3c  __aeabi_stdin                         
+20000d40  __aeabi_stdout                        
+00005141  __aeabi_uldivmod                      
+ffffffff  __binit__                             
+ffffffff  __c_args__                            
+UNDEFED   __mpu_init                            
+2000fe00  __stack                               
+00006959  _c_int00_noargs                       
+00006fb4  _ctypes_                              
+20000c5c  _device                               
+20000b6c  _ftable                               
+20000d6c  _lock                                 
+0000409b  _nop                                  
+000062fb  _sl_BuildAddress                      
+000060f9  _sl_GetStartResponseConvert           
+000050a9  _sl_HandleAsync_Accept                
+00004d55  _sl_HandleAsync_Connect               
+0000469d  _sl_HandleAsync_DnsGetHostByName      
+000044fd  _sl_HandleAsync_DnsGetHostByService   
+00004be5  _sl_HandleAsync_InitComplete          
+00004765  _sl_HandleAsync_PingResponse          
+000051d9  _sl_HandleAsync_Select                
+0000537d  _sl_HandleAsync_Stop                  
+0000482d  _sl_TruncatePayloadByProtocol         
+20000cd4  _stream                               
+20000000  _sys_memory                           
+UNDEFED   _system_post_cinit                    
+00006fad  _system_pre_init                      
+20000d70  _unlock                               
+00006fb1  abort                                 
+000063e5  atoi                                  
+ffffffff  binit                                 
+00005f39  close                                 
+00006eb3  copysign                              
+00006eb3  copysignl                             
+20000b57  ctrl_info                             
+20000d78  errno                                 
+00006509  exit                                  
+00006b2d  finddevice                            
+00005265  fputc                                 
+00003a69  fputs                                 
+00004351  free                                  
+00005ced  frexp                                 
+00005ced  frexpl                                
+00005d51  fseek                                 
+20000d68  gFirstCmdMode                         
+000071ec  g_H2NCnysPattern                      
+000071f4  g_H2NSyncPattern                      
+20000800  g_StatMem                             
+20000d24  g_Status                              
+20000b24  g__SlNonOsCB                          
+20000d60  g_pCB                                 
+000066ed  getdevice                             
+000045d1  initCC3100                            
+00000000  interruptVectors                      
+00003b7d  ldexp                                 
+00003b7d  ldexpl                                
+00006cc5  lseek                                 
+00006255  ltoa                                  
+000049b9  main                                  
+00005695  malloc                                
+00006e37  memccpy                               
+00006e17  memchr                                
+0000500d  memcpy                                
+00005621  memset                                
+20000b4c  meter_info                            
+00006991  minit                                 
+20000d74  pIraEventHandler                      
+20000d64  pPingCallBackFunc                     
+20000b5f  parmbuf                               
+00005bb9  printf                                
+00005265  putc                                  
+20000d2c  receivedAlready                       
+00006e6d  registerInterruptHandler              
+00006c49  remove                                
+20000d28  retVal                                
+00003b7d  scalbn                                
+00003b7d  scalbnl                               
+00004275  setvbuf                               
+000052f1  sl_Bind                               
+00006b5d  sl_Close                              
+00004f65  sl_DevGet                             
+00006773  sl_Htonl                              
+000068ad  sl_Htons                              
+00004c9d  sl_NetAppMDNSRegisterUnregisterService
+000069c9  sl_NetAppMDNSUnRegisterService        
+00005c21  sl_NetAppSendTokenValue               
+000058d1  sl_NetCfgSet                          
+00003951  sl_RecvFrom                           
+00002e15  sl_Select                             
+00003719  sl_SendTo                             
+0000593d  sl_SetSockOpt                         
+00005f95  sl_Socket                             
+00003c8d  sl_Start                              
+000034c9  sl_Stop                               
+000018cd  sl_WlanConnect                        
+00006f7b  sl_WlanDisconnect                     
+00005db5  sl_WlanPolicySet                      
+00006b8d  sl_WlanProfileDel                     
+00006151  sl_WlanRxFilterSet                    
+000059a9  sl_WlanSet                            
+00006bbd  sl_WlanSetMode                        
+00006f87  spi_Close                             
+00003255  spi_Open                              
+00005781  spi_Read                              
+00005a15  spi_Write                             
+00006e9d  strchr                                
+00006e85  strcmp                                
+00006ec7  strcpy                                
+00006edb  strlen                                
+000069ff  strncpy                               
+20000d30  transmitedAlready                     
+00006c49  unlink                                
+00006f01  wcslen                                
+00006d15  write                                 
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address   name                                  
+-------   ----                                  
+00000000  __TI_static_base__                    
+00000000  interruptVectors                      
+000000e5  __TI_printfi                          
+00000200  __STACK_SIZE                          
+00000800  __SYSMEM_SIZE                         
+00000b43  AES256_IRQHandler                     
+00000b43  BusFault_Handler                      
+00000b43  COMP_E0_IRQHandler                    
+00000b43  COMP_E1_IRQHandler                    
+00000b43  CS_IRQHandler                         
+00000b43  DMA_ERR_IRQHandler                    
+00000b43  DMA_INT0_IRQHandler                   
+00000b43  DMA_INT1_IRQHandler                   
+00000b43  DMA_INT2_IRQHandler                   
+00000b43  DMA_INT3_IRQHandler                   
+00000b43  DebugMon_Handler                      
+00000b43  Default_Handler                       
+00000b43  EUSCIA1_IRQHandler                    
+00000b43  EUSCIA2_IRQHandler                    
+00000b43  EUSCIA3_IRQHandler                    
+00000b43  EUSCIB0_IRQHandler                    
+00000b43  EUSCIB1_IRQHandler                    
+00000b43  EUSCIB2_IRQHandler                    
+00000b43  EUSCIB3_IRQHandler                    
+00000b43  FLCTL_IRQHandler                      
+00000b43  FPU_IRQHandler                        
+00000b43  HardFault_Handler                     
+00000b43  MemManage_Handler                     
+00000b43  NMI_Handler                           
+00000b43  PCM_IRQHandler                        
+00000b43  PORT3_IRQHandler                      
+00000b43  PORT4_IRQHandler                      
+00000b43  PORT5_IRQHandler                      
+00000b43  PORT6_IRQHandler                      
+00000b43  PSS_IRQHandler                        
+00000b43  PendSV_Handler                        
+00000b43  RTC_C_IRQHandler                      
+00000b43  SVC_Handler                           
+00000b43  SysTick_Handler                       
+00000b43  T32_INT1_IRQHandler                   
+00000b43  T32_INT2_IRQHandler                   
+00000b43  T32_INTC_IRQHandler                   
+00000b43  TA0_0_IRQHandler                      
+00000b43  TA0_N_IRQHandler                      
+00000b43  TA1_0_IRQHandler                      
+00000b43  TA1_N_IRQHandler                      
+00000b43  TA2_0_IRQHandler                      
+00000b43  TA2_N_IRQHandler                      
+00000b43  TA3_0_IRQHandler                      
+00000b43  TA3_N_IRQHandler                      
+00000b43  UsageFault_Handler                    
+00000b43  WDT_A_IRQHandler                      
+00000b45  _SlDrvMsgRead                         
+00001179  _SlAsyncEventGenericHandler           
+000018cd  sl_WlanConnect                        
+00001b11  _SlDrvRxHdrRead                       
+00001d25  _SlDrvDataReadOp                      
+00001f2d  _SlDrvReleasePoolObj                  
+00002135  _SlDrvWaitForPoolObj                  
+0000233d  _SlDrvMsgWrite                        
+000028e9  _SlDrvDataWriteOp                     
+00002ab5  __aeabi_dsub                          
+00002abf  __aeabi_dadd                          
+00002c6b  EUSCIA0_IRQHandler                    
+00002c6b  EUSCIA0_IRQHandler                    
+00002e15  sl_Select                             
+00002fa9  _SlFindAndSetActiveObj                
+00003255  spi_Open                              
+00003391  __aeabi_ddiv                          
+000034c7  PORT1_IRQHandler                      
+000034c7  PORT1_IRQHandler                      
+000034c9  sl_Stop                               
+00003719  sl_SendTo                             
+00003839  _SlDrvClassifyRxMsg                   
+00003951  sl_RecvFrom                           
+00003a69  fputs                                 
+00003b7d  ldexp                                 
+00003b7d  ldexpl                                
+00003b7d  scalbn                                
+00003b7d  scalbnl                               
+00003c8d  sl_Start                              
+00003d9d  _SlDrvMsgReadCmdCtx                   
+00003ea1  _SlDrvNetAppEventHandler              
+00003f9f  __aeabi_dmul                          
+0000409b  _nop                                  
+0000409d  _SlDrvDriverCBInit                    
+0000418d  _SlDrvMsgReadSpawnCtx                 
+00004275  setvbuf                               
+00004351  free                                  
+00004429  SystemInit                            
+000044fd  _sl_HandleAsync_DnsGetHostByService   
+000045d1  initCC3100                            
+0000469d  _sl_HandleAsync_DnsGetHostByName      
+00004765  _sl_HandleAsync_PingResponse          
+0000482d  _sl_TruncatePayloadByProtocol         
+000048f5  _SlRemoveFromList                     
+000049b9  main                                  
+00004b2d  _SlDrvCmdOp                           
+00004be5  _sl_HandleAsync_InitComplete          
+00004c9d  sl_NetAppMDNSRegisterUnregisterService
+00004d55  _sl_HandleAsync_Connect               
+00004ebb  __aeabi_idiv0                         
+00004ebb  __aeabi_ldiv0                         
+00004ebd  _SlDrvDriverCBDeinit                  
+00004f65  sl_DevGet                             
+0000500d  __aeabi_memcpy                        
+0000500d  __aeabi_memcpy4                       
+0000500d  __aeabi_memcpy8                       
+0000500d  memcpy                                
+000050a9  _sl_HandleAsync_Accept                
+00005141  __aeabi_uldivmod                      
+000051d9  _sl_HandleAsync_Select                
+00005265  fputc                                 
+00005265  putc                                  
+000052f1  sl_Bind                               
+0000537d  _sl_HandleAsync_Stop                  
+0000548d  __aeabi_cdcmpeq                       
+0000548d  __aeabi_cdcmple                       
+00005513  __aeabi_cdrcmple                      
+00005599  _SlDrvObjInit                         
+00005619  __aeabi_memclr                        
+00005619  __aeabi_memclr4                       
+00005619  __aeabi_memclr8                       
+0000561b  __aeabi_memset                        
+0000561b  __aeabi_memset4                       
+0000561b  __aeabi_memset8                       
+00005621  memset                                
+00005695  malloc                                
+0000570d  __TI_closefile                        
+00005781  spi_Read                              
+00005865  _SlNonOsMainLoopTask                  
+000058d1  sl_NetCfgSet                          
+0000593d  sl_SetSockOpt                         
+000059a9  sl_WlanSet                            
+00005a15  spi_Write                             
+00005a81  HOSTlseek                             
+00005ae9  HOSTrename                            
+00005b51  __TI_decompress_lzss                  
+00005bb9  printf                                
+00005c21  sl_NetAppSendTokenValue               
+00005c89  _SlDrvDeviceEventHandler              
+00005ced  frexp                                 
+00005ced  frexpl                                
+00005d51  fseek                                 
+00005db5  sl_WlanPolicySet                      
+00005e19  __TI_wrt_ok                           
+00005e7d  HOSTopen                              
+00005edd  _SlNonOsSemGet                        
+00005f39  close                                 
+00005f95  sl_Socket                             
+00005ff1  HOSTread                              
+00006049  HOSTwrite                             
+000060a1  SimpleLinkWlanEventHandler            
+000060f9  _sl_GetStartResponseConvert           
+00006151  sl_WlanRxFilterSet                    
+00006201  _SlNonOsSpawn                         
+00006255  ltoa                                  
+000062fb  _sl_BuildAddress                      
+0000634d  _SlDrvRxIrqHandler                    
+00006399  __TI_doflush                          
+000063e5  atoi                                  
+00006431  CC3100_InterruptEnable                
+00006479  _SlDrvBasicCmd                        
+000064c1  _SlDrvCmdSend                         
+00006509  exit                                  
+00006551  __aeabi_d2iz                          
+00006599  HOSTclose                             
+000065dd  HOSTunlink                            
+00006621  _SlDrvFlowContDeinit                  
+00006665  _SlDrvFlowContInit                    
+000066a9  __TI_auto_init_nobinit_nopinit        
+000066ed  getdevice                             
+00006731  _SlDrvShiftDWord                      
+00006773  sl_Htonl                              
+000067b5  SimpleLinkNetAppEventHandler          
+00006833  CopyPingResultsToReport               
+000068ad  sl_Htons                              
+000068e9  ADC14_getEnabledInterruptStatus       
+00006921  __TI_writemsg                         
+0000694f  C$$IO$$                               
+00006959  _c_int00_noargs                       
+00006991  minit                                 
+000069c9  sl_NetAppMDNSUnRegisterService        
+000069ff  strncpy                               
+00006a35  __TI_cleanup                          
+00006a69  __TI_readmsg                          
+00006a9d  ADC14_clearInterruptFlag              
+00006acd  CC3100_InterruptDisable               
+00006afd  PORT2_IRQHandler                      
+00006afd  PORT2_IRQHandler                      
+00006b2d  finddevice                            
+00006b5d  sl_Close                              
+00006b8d  sl_WlanProfileDel                     
+00006bbd  sl_WlanSetMode                        
+00006bed  __aeabi_i2d                           
+00006c1d  ADC14_getInterruptStatus              
+00006c49  remove                                
+00006c49  unlink                                
+00006c75  Delay                                 
+00006c9d  SL_FD_ISSET                           
+00006cc5  lseek                                 
+00006d15  write                                 
+00006d3d  ADC14_IRQHandler                      
+00006d3d  ADC14_IRQHandler                      
+00006d65  ReceiveData                           
+00006d89  SendData                              
+00006dad  WDT_A_holdTimer                       
+00006dd1  _SlDrvObjDeInit                       
+00006df5  SL_FD_SET                             
+00006e17  memchr                                
+00006e37  memccpy                               
+00006e53  _SlNonOsSemSet                        
+00006e6d  registerInterruptHandler              
+00006e85  strcmp                                
+00006e9d  strchr                                
+00006eb3  copysign                              
+00006eb3  copysignl                             
+00006ec7  strcpy                                
+00006edb  strlen                                
+00006eef  __TI_zero_init_nomemset               
+00006f01  wcslen                                
+00006f15  CC3100_disable                        
+00006f25  CC3100_enable                         
+00006f35  SL_FD_ZERO                            
+00006f45  SimpleLinkSockEventHandler            
+00006f55  __TI_decompress_none                  
+00006f63  Reset_Handler                         
+00006f6f  SimpleLinkHttpServerCallback          
+00006f7b  sl_WlanDisconnect                     
+00006f87  spi_Close                             
+00006f93  SimpleLinkGeneralEventHandler         
+00006f9d  __aeabi_errno_addr                    
+00006fad  _system_pre_init                      
+00006fb1  C$$EXIT                               
+00006fb1  abort                                 
+00006fb4  _ctypes_                              
+00007168  _SlActionLookupTable                  
+000071ec  g_H2NCnysPattern                      
+000071f4  g_H2NSyncPattern                      
+0000720c  _SlDeviceGetCmdCtrl                   
+00007210  _SlNetAppSendTokenValueCmdCtrl        
+00007214  _SlNetCfgSetCmdCtrl                   
+00007218  _SlPolicySetCmdCtrl                   
+0000721c  _SlProfileDelCmdCtrl                  
+00007220  _SlRecvfomCmdCtrl                     
+00007224  _SlRegisterServiceCtrl                
+00007228  _SlRxFilterSetCmdCtrl                 
+0000722c  _SlSelectCmdCtrl                      
+00007230  _SlSetSockOptCmdCtrl                  
+00007234  _SlSockCloseCmdCtrl                   
+00007238  _SlSockSocketCmdCtrl                  
+0000723c  _SlStopCmdCtrl                        
+00007240  _SlWlanCfgSetCmdCtrl                  
+00007244  _SlWlanSetModeCmdCtrl                 
+000072c4  __TI_Handler_Table_Base               
+000072d0  __TI_Handler_Table_Limit              
+000072d8  __TI_CINIT_Base                       
+000072e8  __TI_CINIT_Limit                      
+20000000  _sys_memory                           
+20000800  g_StatMem                             
+20000964  __CIOBUF_                             
+20000a84  __TI_tmpnams                          
+20000b24  g__SlNonOsCB                          
+20000b4c  meter_info                            
+20000b57  ctrl_info                             
+20000b5f  parmbuf                               
+20000b6c  _ftable                               
+20000c5c  _device                               
+20000cd4  _stream                               
+20000d24  g_Status                              
+20000d28  retVal                                
+20000d2c  receivedAlready                       
+20000d30  transmitedAlready                     
+20000d34  SockIDRx                              
+20000d36  SockIDTx                              
+20000d38  __TI_ft_end                           
+20000d3c  __aeabi_stdin                         
+20000d40  __aeabi_stdout                        
+20000d44  __aeabi_stderr                        
+20000d48  __TI_cleanup_ptr                      
+20000d4c  __TI_dtors_ptr                        
+20000d50  __TI_enable_exit_profile_output       
+20000d60  g_pCB                                 
+20000d64  pPingCallBackFunc                     
+20000d68  gFirstCmdMode                         
+20000d6c  _lock                                 
+20000d70  _unlock                               
+20000d74  pIraEventHandler                      
+20000d78  errno                                 
+2000fe00  __stack                               
+20010000  __STACK_END                           
+4000480c  WDTCTL_SYM                            
+ffffffff  __TI_pprof_out_hndl                   
+ffffffff  __TI_prof_data_size                   
+ffffffff  __TI_prof_data_start                  
+ffffffff  __binit__                             
+ffffffff  __c_args__                            
+ffffffff  binit                                 
+UNDEFED   __mpu_init                            
+UNDEFED   _system_post_cinit                    
+
+[300 symbols]
