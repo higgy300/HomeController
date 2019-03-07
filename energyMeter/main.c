@@ -30,22 +30,22 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --/COPYRIGHT--*/
 /******************************************************************************
- * MSP432 Energy Meter Measurement Module
+ * MSP432 Empty Project
  *
- * Description: Measures single-phase AC power
+ * Description: An empty project that uses DriverLib. In this project, DriverLib
+ * is built from source instead of the usual library.
  *
- *                             MSP432P401
- *                       _  ------------------
- *                      /|\|                  |
- *                       | |                  |
- *                       --|RST               |
- *                         |                  |
- *   (Analog Input) Vin -->|A6                |
- *   (Analog Input)  I1 -->|A8                |
- *   (Analog Input)  I2 -->|A9                |
- *                         |                  |
- *                          ------------------
- * Authors: Juan Higuera and Mateo Pena
+ *                MSP432P401
+ *             ------------------
+ *         /|\|                  |
+ *          | |                  |
+ *          --|RST               |
+ *            |                  |
+ *            |                  |
+ *            |                  |
+ *            |                  |
+ *            |                  |
+ * Author: 
 *******************************************************************************/
 /* DriverLib Includes */
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
@@ -54,13 +54,14 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "energy_meter.h"
+//#include "energy_meter.h"
 #include "cc3100_usage.h"
 #include "simplelink.h"
 #include "sl_common.h"
 #include "_data_pack_.h"
+#include "ClockSys.h"
 
-#define HANDHELD_DEVICE_IP_ADDR HOST_IP_ADDR
+#define HUB_IP 0xC0A80102
 #define ADC_14BIT_SAMPLERESOLUTION 16384
 #define Vref 3.3
 #define SAMPLE_LENGTH       128
@@ -73,61 +74,83 @@ static uint16_t curr1_buffer[3];
 static uint16_t curr2_buffer[3];
 float ADC_normalized_buffer[3];
 static int i;
-//_controller_t ctrl_info;
-//_eMeter_t meter_info;
-//bool doneADC = false;
+_controller_t ctrl_info;
+_device_t meter_info;
+uint32_t METER_IP;
 
 /** MAIN **/
 void main(void) {
 
     /* Stop Watchdog  */
+    WDT_A_clearTimer();
     WDT_A_holdTimer();
-    Interrupt_enableSleepOnIsrExit();
 
+    ClockSys_SetMaxFreq();
+    //Interrupt_enableSleepOnIsrExit();
 
     /* Enabling the FPU for floating point operation */
     //FPU_enableModule();
     //FPU_enableLazyStacking();
 
     /* Store the addresses of the wifi packet structures for reuse */
-    //uint8_t *ctrl_ptr = &ctrl_info;
-    //uint8_t *meter_ptr = &meter_info;
+    uint8_t *ctrl_ptr = &ctrl_info;
+    uint8_t *meter_ptr = &meter_info;
 
     /* Initialize ADC buffers to 0 */
-    memset(ADC_result_buffer, 0x00, 3 * sizeof(uint16_t));
+    /*memset(ADC_result_buffer, 0x00, 3 * sizeof(uint16_t));
     memset(voltage_buffer, 0x00, 3 * sizeof(uint16_t));
     memset(curr1_buffer, 0x00, 3 * sizeof(uint16_t));
     memset(curr2_buffer, 0x00, 3 * sizeof(uint16_t));
     ADC_normalized_buffer[0] = 0.0;
     ADC_normalized_buffer[1] = 0.0;
     ADC_normalized_buffer[2] = 0.0;
-    i = 0;
+    i = 0;*/
 
     /* Initialize SPI to be used with WiFi */
-    //spi_Open(0,0);
-
+    spi_Open(0,0);
     /* Initialize CC3100 device for WiFi capability */
-    //initCC3100(Client);
-
-    //meter_info.curr1 = 0;
-    //meter_info.curr2 = 0;
-    //meter_info.voltage = 0;
-    //meter_info.ctrl_acknowledged = false;
-    // How do I get energy meter's IP?
-
-    /* Establish communication between energy meter and controller */
-    /*ctrl_info.meter_requesting = true;
-    SendData(ctrl_ptr, ctrl_info.ip_addr, sizeof(meter_info));
-    while(!meter_info.ctrl_acknowledged) {
-        ReceiveData(meter_ptr, sizeof(meter_info));
-    }*/
-
+    initCC3100(Client);
 
     /* Initialize ADC to measure Voltage and currents */
-    init_EnergyMeter();
+    //init_EnergyMeter();
+    meter_info.voltage = 0;
+    meter_info.fire_requesting = false;
+    meter_info.meter_requesting = true;
+    meter_info.curr1 = 0;
+    meter_info.curr2 = 0;
+    meter_info.fire_reading = 0;
+    ctrl_info.ctrl_acknowledged_fire = false;
+    ctrl_info.ctrl_acknowledged_meter = false;
+
+    uint16_t test_val = 0;
+    bool transmission_completed = false;
+    bool reset_stats = false;
+
+    while (1) {
+        //transmission_completed = false;
+        meter_info.voltage = ++test_val;
+        //meter_info.meter_requesting = true;
+        /*while (!transmission_completed) {
+
+            SendData(meter_ptr, HUB_IP, sizeof(meter_info));
+            ReceiveData(ctrl_ptr, sizeof(ctrl_info));
+            if (ctrl_info.ctrl_acknowledged_meter) {
+                transmission_completed = true;
+                ctrl_info.ctrl_acknowledged_meter = false;
+                meter_info.meter_requesting = false;
+            }
+        } */
+        SendData(meter_ptr, HUB_IP, sizeof(meter_info));
+    }
+
+
+    meter_info.curr1 = 69;
+    meter_info.curr2 = 1;
+    meter_info.voltage = 37;
 
     while(1) {
-        PCM_gotoLPM0();
+        SendData(meter_ptr, HUB_IP, sizeof(meter_info));
+        //PCM_gotoLPM0();
     }
 }
 
@@ -149,16 +172,14 @@ void ADC14_IRQHandler(void) {
     if(status & ADC_INT2) {
         /* Returns the conversion results of Vin, I1, I2 and stores it in the
          * buffer. */
-        ADC14_getMultiSequenceResult(ADC_result_buffer);
+        //ADC14_getMultiSequenceResult(ADC_result_buffer);
 
-        voltage_buffer[0] = ADC_result_buffer[0];
+        /*voltage_buffer[0] = ADC_result_buffer[0];
         curr1_buffer[0] = ADC_result_buffer[1];
         curr2_buffer[0] = ADC_result_buffer[2];
         ADC_normalized_buffer[0] = (ADC_result_buffer[0] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
         ADC_normalized_buffer[1] = (ADC_result_buffer[1] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
-        ADC_normalized_buffer[2] = (ADC_result_buffer[2] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
+        ADC_normalized_buffer[2] = (ADC_result_buffer[2] * Vref) / ADC_14BIT_SAMPLERESOLUTION;*/
     }
 }
-
-
 

@@ -12,26 +12,19 @@
 
 #pragma pack (push, 1)
 typedef struct {
-    bool ctrl_acknowledged;
-    uint32_t ip_addr;
-    uint16_t voltage;
-    uint16_t curr1;
-    uint16_t curr2;
-}_eMeter_t;
-
-typedef struct {
-    bool ack_meter;
-    bool ack_fireAlarm;
-    bool meter_requesting;
-    bool fireAlarm_requesting;
-    uint32_t ip_addr;
+    bool ctrl_acknowledged_meter;
+    bool ctrl_acknowledged_fire;
 }_controller_t;
 
 typedef struct {
-    bool ctrl_acknowledged;
-    uint16_t ip_addr;
-    uint16_t reading;
-}_fireAlarm_t;
+    bool fire_requesting;
+    bool meter_requesting;
+    uint16_t voltage;
+    uint16_t curr1;
+    uint16_t curr2;
+    uint16_t fire_reading;
+}_device_t;
+
 #pragma pack (pop)
 
 //void establishConnection(uint8_t* ctrl, uint8_t* device);

@@ -136,4 +136,3 @@ SECTIONS
 /* Symbolic definition of the WDTCTL register for RTS */
 WDTCTL_SYM = 0x4000480C;
 
-
