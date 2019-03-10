@@ -39,6 +39,7 @@ C_SRCS += \
 ../timer32.c \
 ../timer_a.c \
 ../uart.c \
+../uart_driver.c \
 ../wdt_a.c 
 
 C_DEPS += \
@@ -72,6 +73,7 @@ C_DEPS += \
 ./timer32.d \
 ./timer_a.d \
 ./uart.d \
+./uart_driver.d \
 ./wdt_a.d 
 
 OBJS += \
@@ -105,6 +107,7 @@ OBJS += \
 ./timer32.obj \
 ./timer_a.obj \
 ./uart.obj \
+./uart_driver.obj \
 ./wdt_a.obj 
 
 OBJS__QUOTED += \
@@ -138,6 +141,7 @@ OBJS__QUOTED += \
 "timer32.obj" \
 "timer_a.obj" \
 "uart.obj" \
+"uart_driver.obj" \
 "wdt_a.obj" 
 
 C_DEPS__QUOTED += \
@@ -171,6 +175,7 @@ C_DEPS__QUOTED += \
 "timer32.d" \
 "timer_a.d" \
 "uart.d" \
+"uart_driver.d" \
 "wdt_a.d" 
 
 C_SRCS__QUOTED += \
@@ -204,6 +209,7 @@ C_SRCS__QUOTED += \
 "../timer32.c" \
 "../timer_a.c" \
 "../uart.c" \
+"../uart_driver.c" \
 "../wdt_a.c" 
 
 

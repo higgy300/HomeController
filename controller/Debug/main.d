@@ -50,6 +50,9 @@ main.obj: C:/ti/simplelink_msp432p4_sdk_2_40_00_10/source/ti/devices/msp432p4xx/
 main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/string.h
 main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/_ti_config.h
 main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/linkage.h
+main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdlib.h
+main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdio.h
+main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdarg.h
 main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/cc3100_usage.h
 main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/simplelink.h
 main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/user.h
@@ -70,6 +73,9 @@ main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/wlan_rx_filters.h
 main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/sl_common.h
 main.obj: ../_data_pack_.h
 main.obj: ../ClockSys.h
+main.obj: ../bme280_support.h
+main.obj: ../bme280.h
+main.obj: ../typedef.h
 main.obj: ../uart_driver.h
 
 ../main.c: 
@@ -122,6 +128,9 @@ C:/ti/simplelink_msp432p4_sdk_2_40_00_10/source/ti/devices/msp432p4xx/driverlib/
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/string.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/_ti_config.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/linkage.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdlib.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdio.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdarg.h: 
 C:/Users/juanh/Desktop/Design\ 2/WiFi/cc3100_usage.h: 
 C:/Users/juanh/Desktop/Design\ 2/WiFi/simplelink.h: 
 C:/Users/juanh/Desktop/Design\ 2/WiFi/user.h: 
@@ -142,4 +151,7 @@ C:/Users/juanh/Desktop/Design\ 2/WiFi/wlan_rx_filters.h:
 C:/Users/juanh/Desktop/Design\ 2/WiFi/sl_common.h: 
 ../_data_pack_.h: 
 ../ClockSys.h: 
+../bme280_support.h: 
+../bme280.h: 
+../typedef.h: 
 ../uart_driver.h: 

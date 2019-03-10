@@ -54,29 +54,30 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
-//#include "energy_meter.h"
+#include "energy_meter.h"
 #include "cc3100_usage.h"
+//#include "uart_driver.h"
 #include "simplelink.h"
 #include "sl_common.h"
 #include "_data_pack_.h"
 #include "ClockSys.h"
 
 #define HUB_IP 0xC0A80102
-#define ADC_14BIT_SAMPLERESOLUTION 16384
+#define RESOLUTION 16384
 #define Vref 3.3
-#define SAMPLE_LENGTH       128
+#define SAMPLE_LENGTH       100
 
 // Global variables
-//static uint8_t ADC_channel_selector 0;
 static uint16_t ADC_result_buffer[3];
-static uint16_t voltage_buffer[3];
-static uint16_t curr1_buffer[3];
-static uint16_t curr2_buffer[3];
-float ADC_normalized_buffer[3];
+static uint32_t voltage_buffer;
+static uint32_t curr1_buffer;
+static uint32_t curr2_buffer;
+bool transmit;
 static int i;
 _controller_t ctrl_info;
 _device_t meter_info;
 uint32_t METER_IP;
+_controller_t dummy_struc;
 
 /** MAIN **/
 void main(void) {
@@ -89,68 +90,54 @@ void main(void) {
     //Interrupt_enableSleepOnIsrExit();
 
     /* Enabling the FPU for floating point operation */
-    //FPU_enableModule();
-    //FPU_enableLazyStacking();
+    FPU_enableModule();
+    FPU_enableLazyStacking();
 
     /* Store the addresses of the wifi packet structures for reuse */
+    //uint8_t *dummy_ptr = &dummy_struc;
     uint8_t *ctrl_ptr = &ctrl_info;
     uint8_t *meter_ptr = &meter_info;
 
     /* Initialize ADC buffers to 0 */
-    /*memset(ADC_result_buffer, 0x00, 3 * sizeof(uint16_t));
-    memset(voltage_buffer, 0x00, 3 * sizeof(uint16_t));
-    memset(curr1_buffer, 0x00, 3 * sizeof(uint16_t));
-    memset(curr2_buffer, 0x00, 3 * sizeof(uint16_t));
-    ADC_normalized_buffer[0] = 0.0;
-    ADC_normalized_buffer[1] = 0.0;
-    ADC_normalized_buffer[2] = 0.0;
-    i = 0;*/
-
-    /* Initialize SPI to be used with WiFi */
-    spi_Open(0,0);
-    /* Initialize CC3100 device for WiFi capability */
-    initCC3100(Client);
-
-    /* Initialize ADC to measure Voltage and currents */
-    //init_EnergyMeter();
+    memset(ADC_result_buffer, 0x00, 3 * sizeof(uint16_t));
+    voltage_buffer = 0;
+    curr1_buffer = 0;
+    curr2_buffer = 0;
+    i = 0;
+    transmit = false;
     meter_info.voltage = 0;
     meter_info.fire_requesting = false;
-    meter_info.meter_requesting = true;
+    meter_info.meter_requesting = false;
     meter_info.curr1 = 0;
     meter_info.curr2 = 0;
     meter_info.fire_reading = 0;
     ctrl_info.ctrl_acknowledged_fire = false;
     ctrl_info.ctrl_acknowledged_meter = false;
 
-    uint16_t test_val = 0;
-    bool transmission_completed = false;
-    bool reset_stats = false;
+    /* Initialize SPI to be used with WiFi */
+    spi_Open(0,0);
+    /* Initialize CC3100 device for WiFi capability */
+    initCC3100(Client);
+    METER_IP = getLocalIP();
 
-    while (1) {
-        //transmission_completed = false;
-        meter_info.voltage = ++test_val;
-        //meter_info.meter_requesting = true;
-        /*while (!transmission_completed) {
+    /* Initialize ADC to measure Voltage and currents */
+    init_EnergyMeter();
 
-            SendData(meter_ptr, HUB_IP, sizeof(meter_info));
-            ReceiveData(ctrl_ptr, sizeof(ctrl_info));
-            if (ctrl_info.ctrl_acknowledged_meter) {
-                transmission_completed = true;
-                ctrl_info.ctrl_acknowledged_meter = false;
-                meter_info.meter_requesting = false;
-            }
-        } */
-        SendData(meter_ptr, HUB_IP, sizeof(meter_info));
-    }
-
-
-    meter_info.curr1 = 69;
-    meter_info.curr2 = 1;
-    meter_info.voltage = 37;
+    //Initialize uart FOR DEBUGGING PURPOSES
+    //uartInit();
+    //uint16_t test_val = 0;
 
     while(1) {
-        SendData(meter_ptr, HUB_IP, sizeof(meter_info));
-        //PCM_gotoLPM0();
+        if (transmit) {
+            SendData(meter_ptr, HUB_IP, sizeof(meter_info));
+            meter_info.meter_requesting = false;
+            /*snprintf(test.txString, 70, "V = %d\r\ncurr1 = %d\r\ncurr2 = %d\r\n",
+                     meter_info.voltage, meter_info.curr1, meter_info.curr2);
+            sendText();*/
+            transmit = false;
+            ADC14_enableConversion();
+            Interrupt_enableInterrupt(INT_ADC14);
+        }
     }
 }
 
@@ -172,14 +159,29 @@ void ADC14_IRQHandler(void) {
     if(status & ADC_INT2) {
         /* Returns the conversion results of Vin, I1, I2 and stores it in the
          * buffer. */
-        //ADC14_getMultiSequenceResult(ADC_result_buffer);
-
-        /*voltage_buffer[0] = ADC_result_buffer[0];
-        curr1_buffer[0] = ADC_result_buffer[1];
-        curr2_buffer[0] = ADC_result_buffer[2];
-        ADC_normalized_buffer[0] = (ADC_result_buffer[0] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
-        ADC_normalized_buffer[1] = (ADC_result_buffer[1] * Vref) / ADC_14BIT_SAMPLERESOLUTION;
-        ADC_normalized_buffer[2] = (ADC_result_buffer[2] * Vref) / ADC_14BIT_SAMPLERESOLUTION;*/
+        ADC_result_buffer[0] = ADC14_getResult(ADC_MEM0);
+        ADC_result_buffer[1] = ADC14_getResult(ADC_MEM1);
+        ADC_result_buffer[2] = ADC14_getResult(ADC_MEM2);
+        ++i;
+        if (i == SAMPLE_LENGTH) {
+            Interrupt_disableInterrupt(INT_ADC14);
+            ADC14_disableConversion();
+            i = 0;
+            voltage_buffer /= SAMPLE_LENGTH;
+            curr1_buffer /= SAMPLE_LENGTH;
+            curr2_buffer /= SAMPLE_LENGTH;
+            transmit = true;
+            meter_info.voltage = voltage_buffer;
+            meter_info.curr1 = curr1_buffer;
+            meter_info.curr2 = curr2_buffer;
+            meter_info.meter_requesting = true;
+            voltage_buffer = 0;
+            curr1_buffer = 0;
+            curr2_buffer = 0;
+        }
+        voltage_buffer += ADC_result_buffer[0];
+        curr1_buffer += ADC_result_buffer[1];
+        curr2_buffer += ADC_result_buffer[2];
     }
 }
 

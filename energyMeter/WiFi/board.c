@@ -370,13 +370,13 @@ void PORT2_IRQHandler(void)
 */
 //#pragma vector=USCI_A0_VECTOR
 //__interrupt
-void EUSCIA0_IRQHandler(void)
+/*void EUSCIA0_IRQHandler(void)
 {
 #if 0
 	switch(__even_in_range(UCA0IV,0x08))
     {
-        case 0:break;                             /* Vector 0 - no interrupt */
-        case 2:                                   /* Vector 2 - RXIF */
+        case 0:break;                             // Vector 0 - no interrupt
+        case 2:                                   // Vector 2 - RXIF
 #ifdef SL_IF_TYPE_UART
         {
             unsigned char ByteRead;
@@ -433,11 +433,11 @@ void EUSCIA0_IRQHandler(void)
         }
 #endif
             break;
-        case 4:break;                             /* Vector 4 - TXIFG */
+        case 4:break;                             // Vector 4 - TXIFG
         default: break;
     }
 #endif
-}
+}*/
 
 /* Catch interrupt vectors that are not initialized. */
 #if 0

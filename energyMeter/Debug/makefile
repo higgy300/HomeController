@@ -40,6 +40,7 @@ ORDERED_OBJS += \
 "./timer32.obj" \
 "./timer_a.obj" \
 "./uart.obj" \
+"./uart_driver.obj" \
 "./wdt_a.obj" \
 "./WiFi/board.obj" \
 "./WiFi/cc3100_usage.obj" \
@@ -208,8 +209,8 @@ meter.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "ClockSys.obj" "_data_pack_.obj" "adc14.obj" "aes256.obj" "comp_e.obj" "cpu.obj" "crc32.obj" "cs.obj" "dma.obj" "energy_meter.obj" "flash.obj" "fpu.obj" "gpio.obj" "i2c.obj" "interrupt.obj" "main.obj" "mpu.obj" "pcm.obj" "pmap.obj" "pss.obj" "ref_a.obj" "reset.obj" "rtc_c.obj" "spi.obj" "sysctl.obj" "system_msp432p401r.obj" "systick.obj" "timer32.obj" "timer_a.obj" "uart.obj" "wdt_a.obj" "WiFi\board.obj" "WiFi\cc3100_usage.obj" "WiFi\device.obj" "WiFi\driver.obj" "WiFi\flowcont.obj" "WiFi\fs.obj" "WiFi\netapp.obj" "WiFi\netcfg.obj" "WiFi\nonos.obj" "WiFi\socket.obj" "WiFi\spawn.obj" "WiFi\spi_cc3100.obj" "WiFi\wlan.obj" "ccs\startup_msp432p401r_ccs.obj" 
-	-$(RM) "ClockSys.d" "_data_pack_.d" "adc14.d" "aes256.d" "comp_e.d" "cpu.d" "crc32.d" "cs.d" "dma.d" "energy_meter.d" "flash.d" "fpu.d" "gpio.d" "i2c.d" "interrupt.d" "main.d" "mpu.d" "pcm.d" "pmap.d" "pss.d" "ref_a.d" "reset.d" "rtc_c.d" "spi.d" "sysctl.d" "system_msp432p401r.d" "systick.d" "timer32.d" "timer_a.d" "uart.d" "wdt_a.d" "WiFi\board.d" "WiFi\cc3100_usage.d" "WiFi\device.d" "WiFi\driver.d" "WiFi\flowcont.d" "WiFi\fs.d" "WiFi\netapp.d" "WiFi\netcfg.d" "WiFi\nonos.d" "WiFi\socket.d" "WiFi\spawn.d" "WiFi\spi_cc3100.d" "WiFi\wlan.d" "ccs\startup_msp432p401r_ccs.d" 
+	-$(RM) "ClockSys.obj" "_data_pack_.obj" "adc14.obj" "aes256.obj" "comp_e.obj" "cpu.obj" "crc32.obj" "cs.obj" "dma.obj" "energy_meter.obj" "flash.obj" "fpu.obj" "gpio.obj" "i2c.obj" "interrupt.obj" "main.obj" "mpu.obj" "pcm.obj" "pmap.obj" "pss.obj" "ref_a.obj" "reset.obj" "rtc_c.obj" "spi.obj" "sysctl.obj" "system_msp432p401r.obj" "systick.obj" "timer32.obj" "timer_a.obj" "uart.obj" "uart_driver.obj" "wdt_a.obj" "WiFi\board.obj" "WiFi\cc3100_usage.obj" "WiFi\device.obj" "WiFi\driver.obj" "WiFi\flowcont.obj" "WiFi\fs.obj" "WiFi\netapp.obj" "WiFi\netcfg.obj" "WiFi\nonos.obj" "WiFi\socket.obj" "WiFi\spawn.obj" "WiFi\spi_cc3100.obj" "WiFi\wlan.obj" "ccs\startup_msp432p401r_ccs.obj" 
+	-$(RM) "ClockSys.d" "_data_pack_.d" "adc14.d" "aes256.d" "comp_e.d" "cpu.d" "crc32.d" "cs.d" "dma.d" "energy_meter.d" "flash.d" "fpu.d" "gpio.d" "i2c.d" "interrupt.d" "main.d" "mpu.d" "pcm.d" "pmap.d" "pss.d" "ref_a.d" "reset.d" "rtc_c.d" "spi.d" "sysctl.d" "system_msp432p401r.d" "systick.d" "timer32.d" "timer_a.d" "uart.d" "uart_driver.d" "wdt_a.d" "WiFi\board.d" "WiFi\cc3100_usage.d" "WiFi\device.d" "WiFi\driver.d" "WiFi\flowcont.d" "WiFi\fs.d" "WiFi\netapp.d" "WiFi\netcfg.d" "WiFi\nonos.d" "WiFi\socket.d" "WiFi\spawn.d" "WiFi\spi_cc3100.d" "WiFi\wlan.d" "ccs\startup_msp432p401r_ccs.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
