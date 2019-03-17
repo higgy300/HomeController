@@ -54,6 +54,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "energy_meter.h"
 #include "cc3100_usage.h"
 //#include "uart_driver.h"
@@ -65,7 +66,7 @@
 #define HUB_IP 0xC0A80102
 #define RESOLUTION 16384
 #define Vref 3.3
-#define SAMPLE_LENGTH       100
+#define SAMPLE_LENGTH       128
 
 // Global variables
 static uint16_t ADC_result_buffer[3];
@@ -131,7 +132,7 @@ void main(void) {
         if (transmit) {
             SendData(meter_ptr, HUB_IP, sizeof(meter_info));
             meter_info.meter_requesting = false;
-            /*snprintf(test.txString, 70, "V = %d\r\ncurr1 = %d\r\ncurr2 = %d\r\n",
+            /*snprintf(test.txString, 70, "V = %d curr1 = %d curr2 = %d\r\n",
                      meter_info.voltage, meter_info.curr1, meter_info.curr2);
             sendText();*/
             transmit = false;
@@ -162,7 +163,7 @@ void ADC14_IRQHandler(void) {
         ADC_result_buffer[0] = ADC14_getResult(ADC_MEM0);
         ADC_result_buffer[1] = ADC14_getResult(ADC_MEM1);
         ADC_result_buffer[2] = ADC14_getResult(ADC_MEM2);
-        ++i;
+
         if (i == SAMPLE_LENGTH) {
             Interrupt_disableInterrupt(INT_ADC14);
             ADC14_disableConversion();
@@ -179,6 +180,7 @@ void ADC14_IRQHandler(void) {
             curr1_buffer = 0;
             curr2_buffer = 0;
         }
+        ++i;
         voltage_buffer += ADC_result_buffer[0];
         curr1_buffer += ADC_result_buffer[1];
         curr2_buffer += ADC_result_buffer[2];

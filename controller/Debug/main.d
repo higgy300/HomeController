@@ -53,6 +53,9 @@ main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/linkage.h
 main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdlib.h
 main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdio.h
 main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdarg.h
+main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/math.h
+main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/_defs.h
+main.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/machine/_limits.h
 main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/cc3100_usage.h
 main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/simplelink.h
 main.obj: C:/Users/juanh/Desktop/Design\ 2/WiFi/user.h
@@ -76,6 +79,7 @@ main.obj: ../ClockSys.h
 main.obj: ../bme280_support.h
 main.obj: ../bme280.h
 main.obj: ../typedef.h
+main.obj: ../i2c_driver.h
 main.obj: ../uart_driver.h
 
 ../main.c: 
@@ -131,6 +135,9 @@ C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/linkage.h:
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdlib.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdio.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/stdarg.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/math.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/_defs.h: 
+C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.5.LTS/include/machine/_limits.h: 
 C:/Users/juanh/Desktop/Design\ 2/WiFi/cc3100_usage.h: 
 C:/Users/juanh/Desktop/Design\ 2/WiFi/simplelink.h: 
 C:/Users/juanh/Desktop/Design\ 2/WiFi/user.h: 
@@ -154,4 +161,5 @@ C:/Users/juanh/Desktop/Design\ 2/WiFi/sl_common.h:
 ../bme280_support.h: 
 ../bme280.h: 
 ../typedef.h: 
+../i2c_driver.h: 
 ../uart_driver.h: 

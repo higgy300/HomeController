@@ -55,6 +55,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 
 /* WiFi libraries */
 #include "cc3100_usage.h"
@@ -75,7 +76,7 @@ _controller_t ctrl_info;
 _device_t meter_info;
 uint32_t HUB_IP;
 uint32_t METER_IP = 0xC0A80103;
-uint32_t FIRE_IP;
+//uint32_t FIRE_IP;
 #define RESOLUTION 16384
 #define Vref 3.3
 // BME280
@@ -90,9 +91,16 @@ int numMsgsRx = 0;
 int tempIndex = 5;
 int numChars = 0;
 
+float norm_press;
+float norm_temp;
+float norm_hum;
+
 /* Function Prototypes */
 void convertMeterReadings(char*, float);
 void convertEnvironmentReadings();
+void reverse(char*, int);
+int integerToString(int, char[], int);
+void floatToArray(float, char*, int);
 
 /** MAIN **/
 void main(void) {
@@ -115,7 +123,7 @@ void main(void) {
     uint8_t *meter_ptr = &meter_info;
 
     /* Initialize SPI to be used with WiFi */
-    spi_Open(0,0);
+    //spi_Open(0,0);
     snprintf(test.txString, 70,
              "Initializing Wifi\r\n");
     sendText();
@@ -137,9 +145,6 @@ void main(void) {
     float norm_voltage = 0.0;
     float norm_curr1 = 0.0;
     float norm_curr2 = 0.0;
-    char *norm_voltage_string = malloc(5);
-    char *norm_curr1_string = malloc(5);
-    char *norm_curr2_string = malloc(5);
 
     snprintf(test.txString, 70,
              "Waiting for meter connection.\r\n");
@@ -157,29 +162,55 @@ void main(void) {
         ReceiveData(meter_ptr, sizeof(meter_info));
         if (meter_info.meter_requesting) {
             ++count;
+
+            // Create temporary dynamic arrays for the float to string conversion values
+            char *final_press = malloc(10);
+            char *final_temp = malloc(10);
+            char *final_hum = malloc(10);
+            char *norm_voltage_string = malloc(10);
+            char *norm_curr1_string = malloc(10);
+            char *norm_curr2_string = malloc(10);
+
+            // Convert the energy meter readings to actual readings
             norm_voltage = (float)(meter_info.voltage * Vref) / (float)RESOLUTION;
             norm_curr1 = (float)(meter_info.curr1 * Vref) / (float)RESOLUTION;
             norm_curr2 = (float)(meter_info.curr2 * Vref) / (float)RESOLUTION;
-            convertMeterReadings(norm_voltage_string, norm_voltage);
-            convertMeterReadings(norm_curr1_string, norm_curr1);
-            convertMeterReadings(norm_curr2_string, norm_curr2);
+            // Convert the float values to string
+            floatToArray(norm_voltage, norm_voltage_string, 2);
+            floatToArray(norm_curr1, norm_curr1_string, 2);
+            floatToArray(norm_curr2, norm_curr2_string, 2);
+
+            // Read the BME280 data
             returnRslt = bme280_read_pressure_temperature_humidity(&g_u32ActualPress,
                                                                    &g_s32ActualTemp,
                                                                    &g_u32ActualHumity);
+            // Convert the sensor data to float values
+            convertEnvironmentReadings(g_u32ActualPress, g_s32ActualTemp, g_u32ActualHumity);
+            // Convert float values to string
+            floatToArray(norm_press, final_press, 2);
+            floatToArray(norm_temp, final_temp, 2);
+            floatToArray(norm_hum, final_hum, 2);
 
+            // Send results to putty
             snprintf(test.txString, 70, "#%d voltage:  %s curr1:  %s curr2:  %s\r\n",
                      count, norm_voltage_string, norm_curr1_string, norm_curr2_string);
             sendText();
-            snprintf(test.txString, 70, "humidity:  %d pressure:  %d temperature:  %d\r\n",
-                     g_u32ActualHumity, g_u32ActualPress, g_s32ActualTemp);
+            snprintf(test.txString, 70, "humidity: %s %%rH pressure: %s kPa temperature: %s C\r\n",
+                     final_hum, final_press, final_temp);
             sendText();
+
+            // Change this boolean to prevent unwanted repeated data
             meter_info.meter_requesting = false;
-            //ctrl_info.ctrl_acknowledged_meter = false;
+
+            // Deallocate temporary dynamic arrays
+            free(final_press);
+            free(final_temp);
+            free(final_hum);
+            free(norm_voltage_string);
+            free(norm_curr1_string);
+            free(norm_curr2_string);
         }
     }
-    free(norm_voltage_string);
-    free(norm_curr1_string);
-    free(norm_curr2_string);
 }
 
 void convertMeterReadings(char* str, float ADC) {
@@ -195,6 +226,60 @@ void convertMeterReadings(char* str, float ADC) {
     str[4] = '\0';
 }
 
-void convertEnvironmentReadings() {
+void convertEnvironmentReadings(s32 press, u32 temp, u32 hum) {
+    norm_press = (float)press / 1000.0;
+    norm_temp = (float)temp / 100.0;
+    norm_hum = (float)hum / 1000.0;
+}
 
+void reverse(char *str, int len) {
+    int i = 0, j = len - 1, temp;
+    while (i < j) {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+int integerToString(int num, char str[], int decimal_places) {
+    int i = 0;
+
+    while (num) {
+        str[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+
+    // If number of digits required is more, then
+    // add 0s at the beginning
+    while (i < decimal_places)
+        str[i++] = '0';
+
+    reverse(str, i);
+    str[i] = '\0';
+    return i;
+}
+
+void floatToArray(float n, char *str, int decimal_places) {
+    // Extract integer part
+    int integer_part = (int)n;
+
+    // Extract floating part
+    float floating_part = n - (float)integer_part;
+
+    // convert integer part to string
+    int i = integerToString(integer_part, str, 0);
+
+    // check for display option after point
+    if (decimal_places != 0) {
+        str[i] = '.';  // add dot
+
+        // Get the value of fraction part upto given no.
+        // of points after dot. The third parameter is needed
+        // to handle cases like 3.14159
+        floating_part = floating_part * pow(10, decimal_places);
+
+        integerToString((int)floating_part, str + i + 1, decimal_places);
+    }
 }
