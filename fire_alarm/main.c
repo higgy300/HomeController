@@ -52,9 +52,12 @@
 
 /* Standard Includes */
 #include <string.h>
+#include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <math.h>
+#include "firealarm.h"
 #include "cc3100_usage.h"
 //#include "uart_driver.h"
 #include "simplelink.h"
@@ -66,16 +69,30 @@
 #define RESOLUTION 16384
 #define Vref 3.3
 #define SAMPLE_LENGTH       128
+#define OFFSET 0.14
+
+
+#define D4 PORT10_PIN3
+#define D5 PORT10_PIN2
+#define D6 PORT10_PIN1
+#define D7 PORT10_PIN0
+#define RS PORT10_PIN4
+#define EN PORT10_PIN5
 
 // Global variables
 static uint16_t ADC_result_buffer;
 static uint32_t voltage_buffer;
 bool transmit;
 static int i;
+float norm_voltage;
 _controller_t ctrl_info;
 _device_t alarm_info;
 uint32_t FIREALARM_IP;
 _controller_t dummy_struc;
+
+void floatToArray(float n, char *str, int decimal_places);
+void reverse(char *str, int len);
+int integerToString(int num, char str[], int decimal_places);
 
 /** MAIN **/
 void main(void) {
@@ -101,6 +118,7 @@ void main(void) {
     voltage_buffer = 0;
     i = 0;
     transmit = false;
+    norm_voltage = 0.0;
     alarm_info.voltage = 0;
     alarm_info.fire_requesting = false;
     alarm_info.meter_requesting = false;
@@ -116,15 +134,31 @@ void main(void) {
     initCC3100(Client);
     FIREALARM_IP = getLocalIP();
 
+
+
     /* Initialize ADC to measure Voltage */
     init_fireAlarm_ADC();
 
+    init_LCD();
+
     //Initialize uart FOR DEBUGGING PURPOSES
     //uartInit();
-
     while(1) {
+        LCD_setCursor(1,0);
+        LCD_string("firealarm: ");
+
+
+        char *voltage_str = malloc(10);
+        norm_voltage = (float)(alarm_info.voltage * Vref) / (float)RESOLUTION;
+        norm_voltage += OFFSET;
+        floatToArray(norm_voltage, voltage_str, 3);
+        LCD_setCursor(2,0);
+        LCD_string(voltage_str);
+        LCD_string(" V ");
+
+
         if (transmit) {
-            SendData(alarm_ptr, HUB_IP, sizeof(alarm_info));
+            //SendData(alarm_ptr, HUB_IP, sizeof(alarm_info));
             alarm_info.fire_requesting = false;
             /*snprintf(test.txString, 70, "V = %d curr1 = %d curr2 = %d\r\n",
                      alarm_info.voltage, alarm_info.curr1, alarm_info.curr2);
@@ -133,6 +167,7 @@ void main(void) {
             ADC14_enableConversion();
             Interrupt_enableInterrupt(INT_ADC14);
         }
+        free(voltage_str);
     }
 }
 
@@ -171,3 +206,54 @@ void ADC14_IRQHandler(void) {
     }
 }
 
+void floatToArray(float n, char *str, int decimal_places) {
+    // Extract integer part
+    int integer_part = (int)n;
+
+    // Extract floating part
+    float floating_part = n - (float)integer_part;
+
+    // convert integer part to string
+    int i = integerToString(integer_part, str, 0);
+
+    // check for display option after point
+    if (decimal_places != 0) {
+        str[i] = '.';  // add dot
+
+        // Get the value of fraction part upto given no.
+        // of points after dot. The third parameter is needed
+        // to handle cases like 3.14159
+        floating_part = floating_part * pow(10, decimal_places);
+
+        integerToString((int)floating_part, str + i + 1, decimal_places);
+    }
+}
+
+void reverse(char *str, int len) {
+    int i = 0, j = len - 1, temp;
+    while (i < j) {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+int integerToString(int num, char str[], int decimal_places) {
+    int i = 0;
+
+    while (num) {
+        str[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+
+    // If number of digits required is more, then
+    // add 0s at the beginning
+    while (i < decimal_places)
+        str[i++] = '0';
+
+    reverse(str, i);
+    str[i] = '\0';
+    return i;
+}

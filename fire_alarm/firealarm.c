@@ -42,7 +42,7 @@
 const Timer_A_UpModeConfig upModeConfig = {
 TIMER_A_CLOCKSOURCE_SMCLK,            // SMCLK Clock Source
 TIMER_A_CLOCKSOURCE_DIVIDER_1,       // SMCLK/1 = 12 MHz
-12000,                  //  12 KHz sampling rate (1ms period)
+24000,                  //  12 KHz sampling rate (1ms period)
 TIMER_A_TAIE_INTERRUPT_DISABLE,      // Disable Timer ISR
 TIMER_A_CCIE_CCR0_INTERRUPT_DISABLE, // Disable CCR0
 TIMER_A_DO_CLEAR                     // Clear Counter
@@ -53,7 +53,7 @@ const Timer_A_CompareModeConfig compareConfig = {
 TIMER_A_CAPTURECOMPARE_REGISTER_1,          // Use CCR1
 TIMER_A_CAPTURECOMPARE_INTERRUPT_DISABLE,   // Disable CCR interrupt
 TIMER_A_OUTPUTMODE_SET_RESET,               // Toggle output but
-12000          // 1ms Period
+24000          // 1ms Period
 };
 
 void init_fireAlarm_ADC() {
@@ -99,10 +99,12 @@ void init_fireAlarm_ADC() {
     Timer_A_startCounter(TIMER_A0_BASE, TIMER_A_UP_MODE);
 }
 
-void init_fireAlarm_LCD() {
+void init_LCD() {
+    // Change pin directions
     GPIO_setAsOutputPin(GPIO_PORT_P10, GPIO_PIN0 | GPIO_PIN1 | GPIO_PIN2 |
                         GPIO_PIN3 | GPIO_PIN4 | GPIO_PIN5);
 
+    // Send these commands to initialize LCD driver as specified in data sheet
     LCD_transmit(0x00);
     _delay_ms(20);
     LCD_command(0x03);
@@ -126,6 +128,9 @@ void init_fireAlarm_LCD() {
     // Increment shifter to the right when writing
     LCD_command(0x06);
     LCD_clearScreen();
+    LCD_setCursor(1,0);
+    LCD_string("Init LCD       ");
+    LCD_clearScreen();
 }
 
 // Clears entire LCD screen
@@ -136,6 +141,7 @@ void LCD_clearScreen() {
 void LCD_setCursor(const char row, const char col) {
     // Range for LCD cursor matrix is R: 1 -> 2  and C: 0 -> 15
     char temp,z,y;
+
     if(row == 1) {
         // MSB is high to indicate write to LCD with the DB[7..4] bit signals ready
         temp = 0x80 + col;
@@ -171,22 +177,22 @@ void LCD_command(char cmd) {
 }
 
 void LCD_transmit(char pinToUse) {
-    if (pinToUse & GPIO_PIN0)
+    if (pinToUse & 0x01)
         setPin(D4,HIGH);
     else
         setPin(D4,LOW);
 
-    if (pinToUse & GPIO_PIN1)
+    if (pinToUse & 0x02)
         setPin(D5,HIGH);
     else
         setPin(D5,LOW);
 
-    if (pinToUse & GPIO_PIN2)
+    if (pinToUse & 0x04)
         setPin(D6,HIGH);
     else
         setPin(D6,LOW);
 
-    if (pinToUse & GPIO_PIN3)
+    if (pinToUse & 0x08)
         setPin(D7,HIGH);
     else
         setPin(D7,LOW);
@@ -198,31 +204,35 @@ void setPin(const int portPin, const int pinSignal) {
     if (pinSignal == LOW) {
         // Look for the correct pin to invert
         if (portPin == PORT10_PIN0)
-            P10->OUT &= ~(1<<PORT10_PIN0);
+            P10->OUT &= ~(1<<0);
         else if (portPin == PORT10_PIN1)
-            P10->OUT &= ~(1<<PORT10_PIN1);
+            P10->OUT &= ~(1<<1);
         else if (portPin == PORT10_PIN2)
-            P10->OUT &= ~(1<<PORT10_PIN2);
+            P10->OUT &= ~(1<<2);
         else if (portPin == PORT10_PIN3)
-            P10->OUT &= ~(1<<PORT10_PIN3);
+            P10->OUT &= ~(1<<3);
         else if (portPin == PORT10_PIN4)
-            P10->OUT &= ~(1<<PORT10_PIN4);
+            P10->OUT &= ~(1<<4);
         else if (portPin == PORT10_PIN5)
-            P10->OUT &= ~(1<<PORT10_PIN5);
+            P10->OUT &= ~(1<<5);
+        else if (portPin == PORT10_PIN6)
+            P10->OUT &= ~(1<<6);
     } else {
         // Look for the correct pin to set as high
         if (portPin == PORT10_PIN0)
-            P10->OUT |= (1<<PORT10_PIN0);
+            P10->OUT |= (1<<0);
         else if (portPin == PORT10_PIN1)
-            P10->OUT |= (1<<PORT10_PIN1);
+            P10->OUT |= (1<<1);
         else if (portPin == PORT10_PIN2)
-            P10->OUT |= (1<<PORT10_PIN2);
+            P10->OUT |= (1<<2);
         else if (portPin == PORT10_PIN3)
-            P10->OUT |= (1<<PORT10_PIN3);
+            P10->OUT |= (1<<3);
         else if (portPin == PORT10_PIN4)
-            P10->OUT |= (1<<PORT10_PIN4);
+            P10->OUT |= (1<<4);
         else if (portPin == PORT10_PIN5)
-            P10->OUT |= (1<<PORT10_PIN5);
+            P10->OUT |= (1<<5);
+        else if (portPin == PORT10_PIN6)
+            P10->OUT |= (1<<6);
     }
 }
 
@@ -262,6 +272,6 @@ void _delay_ms(int ms) {
     int i = 0, j = 0;
 
     for (j = 0; j < ms; j++) {
-        for (i = 45000; i > 0; i--);
+        for (i = 47800; i > 0; i--);
     }
 }
