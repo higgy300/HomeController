@@ -71,19 +71,25 @@
 #include "uart_driver.h"
 #include "typedef.h"
 
+#include "LCDLib.h"
+
 // Global variables
 _controller_t ctrl_info;
 _device_t meter_info;
 uint32_t HUB_IP;
 uint32_t METER_IP = 0xC0A80103;
-//uint32_t FIRE_IP;
+uint32_t FIRE_IP;
 #define RESOLUTION 16384
 #define Vref 3.3
+#define OFFSET1 0.07
+#define OFFSET2 0.18
+
 // BME280
 s32 returnRslt;
 s32 g_s32ActualTemp   = 0;
 u32 g_u32ActualPress  = 0;
 u32 g_u32ActualHumity = 0;
+
 //Receive UART Variables
 #define NUM_RX_CHARS 64
 char rxMsgData[NUM_RX_CHARS] = "";
@@ -94,8 +100,10 @@ int numChars = 0;
 float norm_press;
 float norm_temp;
 float norm_hum;
+bool cleared;
 
 /* Function Prototypes */
+void IP_stringConvert();
 void convertMeterReadings(char*, float);
 void convertEnvironmentReadings();
 void reverse(char*, int);
@@ -111,8 +119,11 @@ void main(void) {
     ClockSys_SetMaxFreq();
     //Interrupt_enableSleepOnIsrExit();
 
+    LCD_Init(0);
+    LCD_Text(40, 5, "TEAM SPARK by Juan H. & Mateo P.", LCD_BLUE);
+
     //Initialize uart
-    uartInit();
+    //uartInit();
 
     /* Enabling the FPU for floating point operation */
     FPU_enableModule();
@@ -123,16 +134,13 @@ void main(void) {
     uint8_t *meter_ptr = &meter_info;
 
     /* Initialize SPI to be used with WiFi */
-    //spi_Open(0,0);
-    snprintf(test.txString, 70,
-             "Initializing Wifi\r\n");
-    sendText();
-    /* Initialize CC3100 device for WiFi capability */
+    LCD_Text(5, 22, "Initializing Wifi...", LCD_BLACK);
+    spi_Open(0,0);
     initCC3100(Client);
     HUB_IP = getLocalIP();
-    snprintf(test.txString, 70,
-             "WiFi initialized!\r\n");
-    sendText();
+    uint8_t* ipStr = malloc(16);
+    IP_stringConvert();
+    LCD_Text(5, 40, "Wifi connected successfully!", LCD_BLACK);
 
     meter_info.voltage = 0;
     meter_info.fire_requesting = false;
@@ -145,11 +153,8 @@ void main(void) {
     float norm_voltage = 0.0;
     float norm_curr1 = 0.0;
     float norm_curr2 = 0.0;
-
-    snprintf(test.txString, 70,
-             "Waiting for meter connection.\r\n");
-    sendText();
-    uint32_t count = 0;
+    cleared = false;
+    LCD_Text(5, 76, "Parameters initialized...", LCD_BLACK);
 
     // Initialize I2C
     initI2C();
@@ -158,11 +163,23 @@ void main(void) {
     bme280_data_readout_template();
     returnRslt = bme280_set_power_mode(BME280_NORMAL_MODE);
 
+    LCD_Text(5, 93, "Sensors initialized...", LCD_BLACK);
+
     while(1) {
         ReceiveData(meter_ptr, sizeof(meter_info));
-        if (meter_info.meter_requesting) {
-            ++count;
-
+        if (meter_info.meter_requesting && !cleared) {
+            cleared = true;
+            LCD_Clear(LCD_WHITE);
+            LCD_Text(40, 5, "TEAM SPARK by Juan H. & Mateo P.", LCD_BLUE);
+            LCD_Text(5, 22, "Environmental Measurements:", LCD_BLACK);
+            LCD_Text(20, 40, "Humidity:          %rH", LCD_BLACK);
+            LCD_Text(20, 60, "Pressure:          kPa", LCD_BLACK);
+            LCD_Text(20, 80, "Temperature:       C", LCD_BLACK);
+            LCD_Text(5, 120, "Energy Measurements:", LCD_BLACK);
+            LCD_Text(20, 140, "Voltage:              V", LCD_BLACK);
+            LCD_Text(20, 160, "Current              mA", LCD_BLACK);
+            LCD_Text(20, 180, "Theft Current:       mA", LCD_BLACK);
+        } else if (meter_info.meter_requesting && cleared) {
             // Create temporary dynamic arrays for the float to string conversion values
             char *final_press = malloc(10);
             char *final_temp = malloc(10);
@@ -172,9 +189,14 @@ void main(void) {
             char *norm_curr2_string = malloc(10);
 
             // Convert the energy meter readings to actual readings
-            norm_voltage = (float)(meter_info.voltage * Vref) / (float)RESOLUTION;
+            norm_voltage = (float)(meter_info.curr2 * Vref) / (float)RESOLUTION;
             norm_curr1 = (float)(meter_info.curr1 * Vref) / (float)RESOLUTION;
-            norm_curr2 = (float)(meter_info.curr2 * Vref) / (float)RESOLUTION;
+            norm_curr2 = (float)(meter_info.voltage * Vref) / (float)RESOLUTION;
+
+            // Apply ADC offset
+            norm_voltage -= OFFSET2;
+            if (norm_voltage < 0)
+                norm_voltage = 0.0;
             // Convert the float values to string
             floatToArray(norm_voltage, norm_voltage_string, 2);
             floatToArray(norm_curr1, norm_curr1_string, 2);
@@ -192,12 +214,16 @@ void main(void) {
             floatToArray(norm_hum, final_hum, 2);
 
             // Send results to putty
-            snprintf(test.txString, 70, "#%d voltage:  %s curr1:  %s curr2:  %s\r\n",
-                     count, norm_voltage_string, norm_curr1_string, norm_curr2_string);
-            sendText();
-            snprintf(test.txString, 70, "humidity: %s %%rH pressure: %s kPa temperature: %s C\r\n",
-                     final_hum, final_press, final_temp);
-            sendText();
+            LCD_DrawRectangle(111, 165, 40, 75, LCD_WHITE);
+            LCD_DrawRectangle(116, 165, 80, 95, LCD_WHITE);
+            LCD_DrawRectangle(130, 180, 140, 175, LCD_WHITE);
+            LCD_DrawRectangle(135, 180, 178, 200, LCD_WHITE);
+            LCD_Text(121, 40, final_hum, LCD_BLACK);
+            LCD_Text(113, 60, final_press, LCD_BLACK);
+            LCD_Text(121, 80, final_temp, LCD_BLACK);
+            LCD_Text(141, 140, norm_voltage_string, LCD_BLACK);
+            LCD_Text(141, 160, norm_curr1_string, LCD_BLACK);
+            LCD_Text(141, 180, norm_curr2_string, LCD_BLACK);
 
             // Change this boolean to prevent unwanted repeated data
             meter_info.meter_requesting = false;
@@ -282,4 +308,39 @@ void floatToArray(float n, char *str, int decimal_places) {
 
         integerToString((int)floating_part, str + i + 1, decimal_places);
     }
+}
+
+void IP_stringConvert() {
+    uint16_t shftAmnt = 24;
+    uint32_t arr[4];
+    char outputString[17];
+    int i = 0, x = 50, y = 58, index = 0, j = 0;
+
+    LCD_Text(5, 58, "IP: ", LCD_BLACK);
+
+    // Split the 4 byte number into a single byte array
+    for (i = 0; i < 4; i++) {
+        arr[i] = (HUB_IP >> shftAmnt) & 0xFF;
+        shftAmnt -= 8;
+    }
+
+    i = 0;
+    // For each single byte, convert the byte to a string. Once converted,
+    // Add each character to the output string
+    for (i = 0; i < 4; i++) {
+        // Make a temporary string
+        char* temp = malloc(10);
+        // Convert the integer to string and retrieve number of digits in string
+        int numOfDigits = integerToString((int)arr[i], temp, 0);
+
+        // Copy the contents of the integer to string function to the output string
+        for (j = 0; j < numOfDigits; j++)
+            outputString[index++] = temp[j];
+        outputString[index++] = '.';
+        // Deallocate temporary string memory
+        free(temp);
+    }
+    // Attach null-terminating character to string and print
+    outputString[index - 1] = '\0';
+    LCD_Text(x, y, outputString, LCD_BLACK);
 }

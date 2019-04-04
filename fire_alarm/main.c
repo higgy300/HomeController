@@ -72,10 +72,10 @@
 #define OFFSET 0.14
 
 
-#define D4 PORT10_PIN3
-#define D5 PORT10_PIN2
-#define D6 PORT10_PIN1
-#define D7 PORT10_PIN0
+#define D4 PORT10_PIN0
+#define D5 PORT10_PIN1
+#define D6 PORT10_PIN2
+#define D7 PORT10_PIN3
 #define RS PORT10_PIN4
 #define EN PORT10_PIN5
 

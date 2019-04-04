@@ -81,6 +81,7 @@ main.obj: ../bme280.h
 main.obj: ../typedef.h
 main.obj: ../i2c_driver.h
 main.obj: ../uart_driver.h
+main.obj: ../LCDLib.h
 
 ../main.c: 
 C:/ti/simplelink_msp432p4_sdk_2_40_00_10/source/ti/devices/msp432p4xx/driverlib/driverlib.h: 
@@ -163,3 +164,4 @@ C:/Users/juanh/Desktop/Design\ 2/WiFi/sl_common.h:
 ../typedef.h: 
 ../i2c_driver.h: 
 ../uart_driver.h: 
+../LCDLib.h: 

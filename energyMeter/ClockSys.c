@@ -4,7 +4,7 @@
  * Holds all functionality for modifying Clock System
  *
  *  Created on: Dec 30, 2016
- *      Author: Raz Aloni
+ *      Author: juanh
  */
 
 #include <stdint.h>

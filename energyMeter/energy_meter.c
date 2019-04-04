@@ -73,7 +73,6 @@ void init_EnergyMeter() {
     /* Configuring the sample trigger to be sourced from Timer_A0  and setting it
      * to automatic iteration after it is triggered*/
     ADC14_setSampleHoldTrigger(ADC_TRIGGER_SOURCE1, false);
-    //ADC14_setSampleHoldTime(ADC_PULSE_WIDTH_192, ADC_PULSE_WIDTH_192);
 
     /* Enabling the interrupt when a conversion on channel 2 (end of sequence)
      * is complete and enabling conversions */
@@ -89,9 +88,5 @@ void init_EnergyMeter() {
 
     /* Starting the Timer */
     Timer_A_startCounter(TIMER_A0_BASE, TIMER_A_UP_MODE);
-
-    /* Triggering the start of the sample */
-    //ADC14_enableConversion();
-    //ADC14_toggleConversionTrigger();
 }
 

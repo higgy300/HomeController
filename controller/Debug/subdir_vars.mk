@@ -9,7 +9,9 @@ CMD_SRCS += \
 ../msp432p401r.cmd 
 
 C_SRCS += \
+../AsciiLib.c \
 ../ClockSys.c \
+../LCDLib.c \
 ../_data_pack_.c \
 ../adc14.c \
 ../aes256.c \
@@ -46,7 +48,9 @@ C_SRCS += \
 ../wdt_a.c 
 
 C_DEPS += \
+./AsciiLib.d \
 ./ClockSys.d \
+./LCDLib.d \
 ./_data_pack_.d \
 ./adc14.d \
 ./aes256.d \
@@ -83,7 +87,9 @@ C_DEPS += \
 ./wdt_a.d 
 
 OBJS += \
+./AsciiLib.obj \
 ./ClockSys.obj \
+./LCDLib.obj \
 ./_data_pack_.obj \
 ./adc14.obj \
 ./aes256.obj \
@@ -120,7 +126,9 @@ OBJS += \
 ./wdt_a.obj 
 
 OBJS__QUOTED += \
+"AsciiLib.obj" \
 "ClockSys.obj" \
+"LCDLib.obj" \
 "_data_pack_.obj" \
 "adc14.obj" \
 "aes256.obj" \
@@ -157,7 +165,9 @@ OBJS__QUOTED += \
 "wdt_a.obj" 
 
 C_DEPS__QUOTED += \
+"AsciiLib.d" \
 "ClockSys.d" \
+"LCDLib.d" \
 "_data_pack_.d" \
 "adc14.d" \
 "aes256.d" \
@@ -194,7 +204,9 @@ C_DEPS__QUOTED += \
 "wdt_a.d" 
 
 C_SRCS__QUOTED += \
+"../AsciiLib.c" \
 "../ClockSys.c" \
+"../LCDLib.c" \
 "../_data_pack_.c" \
 "../adc14.c" \
 "../aes256.c" \
