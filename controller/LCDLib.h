@@ -319,8 +319,5 @@ uint16_t TP_ReadX();
 uint16_t TP_ReadY();
 
 /************************************ Public Functions  *******************************************/
-
-
-
-
+void _delay(unsigned long ms);
 #endif /* LCDLIB_H_ */

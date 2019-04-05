@@ -100,6 +100,9 @@ int numChars = 0;
 float norm_press;
 float norm_temp;
 float norm_hum;
+float norm_voltage = 0.0;
+float norm_curr1 = 0.0;
+float norm_curr2 = 0.0;
 bool cleared;
 
 /* Function Prototypes */
@@ -109,61 +112,37 @@ void convertEnvironmentReadings();
 void reverse(char*, int);
 int integerToString(int, char[], int);
 void floatToArray(float, char*, int);
+void init_WiFi();
+void config_WiFi_strucs();
+void init_sensors();
+void init_systemConfig();
+void init_LCD();
+void printMainMenu();
+void printEnergyMenu();
 
 /** MAIN **/
 void main(void) {
-    /* Stop Watchdog  */
-    WDT_A_clearTimer();
-    WDT_A_holdTimer();
+    // Stop watchdog timer, change clock, initialize FPU
+    init_systemConfig();
 
-    ClockSys_SetMaxFreq();
-    //Interrupt_enableSleepOnIsrExit();
+    // Initialize the LCD driver
+    init_LCD();
 
-    LCD_Init(0);
-    LCD_Text(40, 5, "TEAM SPARK by Juan H. & Mateo P.", LCD_BLUE);
-
-    //Initialize uart
-    //uartInit();
-
-    /* Enabling the FPU for floating point operation */
-    FPU_enableModule();
-    FPU_enableLazyStacking();
-
-    /* Store the addresses of the wifi packet structures for reuse */
+    // Store the addresses of the wifi packet structures for reuse
     uint8_t *ctrl_ptr = &ctrl_info;
     uint8_t *meter_ptr = &meter_info;
 
-    /* Initialize SPI to be used with WiFi */
-    LCD_Text(5, 22, "Initializing Wifi...", LCD_BLACK);
-    spi_Open(0,0);
-    initCC3100(Client);
-    HUB_IP = getLocalIP();
-    uint8_t* ipStr = malloc(16);
-    IP_stringConvert();
-    LCD_Text(5, 40, "Wifi connected successfully!", LCD_BLACK);
+    // Initialize SPI to be used with WiFi
+    config_WiFi_strucs();
+    init_WiFi();
 
-    meter_info.voltage = 0;
-    meter_info.fire_requesting = false;
-    meter_info.meter_requesting = false;
-    meter_info.curr1 = 0;
-    meter_info.curr2 = 0;
-    meter_info.fire_reading = 0;
-    ctrl_info.ctrl_acknowledged_fire = false;
-    ctrl_info.ctrl_acknowledged_meter = false;
-    float norm_voltage = 0.0;
-    float norm_curr1 = 0.0;
-    float norm_curr2 = 0.0;
-    cleared = false;
-    LCD_Text(5, 76, "Parameters initialized...", LCD_BLACK);
+    // Initialize environmental sensors
+    init_sensors();
+    _delay(300);
 
-    // Initialize I2C
-    initI2C();
-
-    // Initialize bme280 sensor
-    bme280_data_readout_template();
-    returnRslt = bme280_set_power_mode(BME280_NORMAL_MODE);
-
-    LCD_Text(5, 93, "Sensors initialized...", LCD_BLACK);
+    // Print the main menu
+    //printMainMenu();
+    printEnergyMenu();
 
     while(1) {
         ReceiveData(meter_ptr, sizeof(meter_info));
@@ -316,7 +295,7 @@ void IP_stringConvert() {
     char outputString[17];
     int i = 0, x = 50, y = 58, index = 0, j = 0;
 
-    LCD_Text(5, 58, "IP: ", LCD_BLACK);
+    LCD_Text(25, 105, "IP: ", LCD_WHITE);
 
     // Split the 4 byte number into a single byte array
     for (i = 0; i < 4; i++) {
@@ -342,5 +321,108 @@ void IP_stringConvert() {
     }
     // Attach null-terminating character to string and print
     outputString[index - 1] = '\0';
-    LCD_Text(x, y, outputString, LCD_BLACK);
+    LCD_Text(55, 105, outputString, LCD_WHITE);
+}
+
+void init_WiFi() {
+    LCD_Text(5, 45, "Initializing Wifi...", LCD_WHITE);
+    spi_Open(0,0);
+    LCD_Text(25, 65, "SPI channel opened", LCD_WHITE);
+    initCC3100(Client);
+    LCD_Text(25, 85, "WiFi driver configured", LCD_WHITE);
+    HUB_IP = getLocalIP();
+    IP_stringConvert();
+    LCD_Text(25, 125, "Wifi connected successfully!", LCD_WHITE);
+}
+
+void config_WiFi_strucs() {
+    LCD_Text(5, 5, "initializing WiFi params...", LCD_WHITE);
+    meter_info.voltage = 0;
+    meter_info.fire_requesting = false;
+    meter_info.meter_requesting = false;
+    meter_info.curr1 = 0;
+    meter_info.curr2 = 0;
+    meter_info.fire_reading = 0;
+    ctrl_info.ctrl_acknowledged_fire = false;
+    ctrl_info.ctrl_acknowledged_meter = false;
+    cleared = false;
+    norm_voltage = 0.0;
+    norm_curr1 = 0.0;
+    norm_curr2 = 0.0;
+    LCD_Text(25, 25, "WiFi params initialized!", LCD_WHITE);
+}
+
+void printEnergyMenu() {
+    LCD_DrawRectangle(0, 320, 0, 17, LCD_WHITE);
+    LCD_Text(2, 1, "Energy Meter Section", LCD_BLACK);
+    LCD_DrawRectangle(0, 320, 16, 17, LCD_BLACK);
+    LCD_DrawRectangle(0, 320, 17, 240, LCD_YELLOW);
+    LCD_Text(15, 25, "Energy Measurements:", LCD_BLACK);
+    LCD_Text(30, 45, "Voltage:", LCD_BLACK);
+    LCD_Text(30, 65, "Current:", LCD_BLACK);
+    LCD_Text(30, 85, "Theft Detection:", LCD_BLACK);
+    LCD_DrawRectangle(75, 215, 175, 220, LCD_BLACK);
+    LCD_Text(120, 190, "Return", LCD_WHITE);
+}
+
+void printMainMenu() {
+    LCD_Clear(LCD_WHITE);
+    LCD_Text(2, 1, "Home Controller", LCD_BLACK);
+    LCD_DrawRectangle(0, 320, 16, 17, LCD_BLACK);
+    LCD_DrawRectangle(157, 161, 17, 240, LCD_BLACK);
+    LCD_DrawRectangle(0, 320, 122, 126, LCD_BLACK);
+    LCD_DrawRectangle(0, 157, 17, 122, LCD_YELLOW);
+    LCD_DrawRectangle(161, 320, 17, 122, LCD_BLUE);
+    LCD_DrawRectangle(0, 157, 126, 240, LCD_CYAN);
+    LCD_DrawRectangle(161, 320, 126, 240, LCD_RED);
+    LCD_Text(18, 55, "Energy Meter", LCD_BLACK);
+    LCD_Text(190, 55, "Air Quality", LCD_WHITE);
+    LCD_Text(20, 172, "Thermostat", LCD_BLACK);
+    LCD_Text(190, 172, "Fire Alarm", LCD_BLACK);
+}
+
+void init_sensors() {
+    LCD_Text(5, 145, "Initializing Sensors...", LCD_WHITE);
+    // Initialize I2C
+    initI2C();
+    LCD_Text(25, 165, "I2C channel opened", LCD_WHITE);
+
+    // Initialize bme280 sensor
+    bme280_data_readout_template();
+    returnRslt = bme280_set_power_mode(BME280_NORMAL_MODE);
+    LCD_Text(25, 185, "Sensors initialized...", LCD_WHITE);
+}
+
+void init_systemConfig() {
+    // Stop Watchdog
+    WDT_A_clearTimer();
+    WDT_A_holdTimer();
+
+    // Change CPU clock to 48 MHz
+    ClockSys_SetMaxFreq();
+
+    // Enabling the FPU for floating point operation
+    FPU_enableModule();
+    FPU_enableLazyStacking();
+}
+
+void init_LCD() {
+    LCD_Init(true);
+    LCD_Clear(LCD_BLUE);
+    LCD_Text(65, 45, "Home Controller System", LCD_ORANGE);
+    LCD_Text(130, 70, "by", LCD_ORANGE);
+    LCD_Text(100, 100, "Juan Higuera", LCD_ORANGE);
+    LCD_Text(110, 120, "Mateo Pena", LCD_ORANGE);
+    _delay(1000);
+    LCD_Clear(LCD_BLACK);
+}
+
+void PORT4_IRQHandler(void) {
+    uint32_t status;
+
+    status = GPIO_getEnabledInterruptStatus(GPIO_PORT_P4);
+    GPIO_clearInterruptFlag(GPIO_PORT_P4, status);
+
+    // start timer here?
+
 }
