@@ -63,7 +63,7 @@
 #include "_data_pack_.h"
 #include "ClockSys.h"
 
-#define HUB_IP 0xC0A80102
+//#define HUB_IP 0xC0A80102
 #define RESOLUTION 16384
 #define Vref 3.3
 #define SAMPLE_LENGTH       128
@@ -78,6 +78,7 @@ static int i;
 _controller_t ctrl_info;
 _device_t meter_info;
 uint32_t METER_IP;
+uint32_t HUB_IP;
 _controller_t dummy_struc;
 
 /** MAIN **/
@@ -112,14 +113,39 @@ void main(void) {
     meter_info.curr1 = 0;
     meter_info.curr2 = 0;
     meter_info.fire_reading = 0;
-    ctrl_info.ctrl_acknowledged_fire = false;
-    ctrl_info.ctrl_acknowledged_meter = false;
+    ctrl_info.fire_ack = false;
+    ctrl_info.meter_ack = true;
+    ctrl_info.hub_req = false;
+    ctrl_info.toAddr = 0;
+    HUB_IP = 0;
 
     /* Initialize SPI to be used with WiFi */
     spi_Open(0,0);
     /* Initialize CC3100 device for WiFi capability */
     initCC3100(Client);
     METER_IP = getLocalIP();
+
+    /*uint16_t x = 0;
+    bool wifiConnected = false;
+    while (!wifiConnected) {
+        ReceiveData(ctrl_ptr, sizeof(ctrl_info));
+        if (ctrl_info.hub_req) {
+            wifiConnected = true;
+            HUB_IP = ctrl_info.IPaddr;
+            ctrl_info.meter_ack = true;
+            ctrl_info.IPaddr = METER_IP;
+            ctrl_info.hub_req = false;
+        }
+    }
+    for (x = 0; x < 10; x++) {
+        SendData(ctrl_ptr, HUB_IP, sizeof(ctrl_info));
+        _delay(30);
+        ReceiveData(ctrl_ptr, sizeof(ctrl_info));
+        if (ctrl_info.hub_req) {
+            break;
+        }
+    }*/
+    HUB_IP = 0xC0A80102;
 
     /* Initialize ADC to measure Voltage and currents */
     init_EnergyMeter();

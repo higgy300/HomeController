@@ -447,8 +447,8 @@ void LCD_Init(bool usingTP)
         Timer32_initModule(TIMER32_0_BASE,TIMER32_PRESCALER_256,TIMER32_32BIT,TIMER32_PERIODIC_MODE);
         Timer32_enableInterrupt(TIMER32_0_BASE);
 
-
-
+        Interrupt_enableInterrupt(INT_PORT4);
+        Interrupt_enableInterrupt(INT_T32_INT1);
        //__enable_irq();
     }
 
@@ -522,7 +522,7 @@ void LCD_Init(bool usingTP)
     LCD_WriteReg(DISPLAY_CONTROL_1, 0x0133); /* 262K color and display ON */
     _delay(50); /* _delay 50 ms */
 
-    LCD_Clear(LCD_WHITE);
+    //LCD_Clear(LCD_WHITE);
 }
 
 /*******************************************************************************

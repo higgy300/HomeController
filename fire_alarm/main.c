@@ -65,7 +65,7 @@
 #include "_data_pack_.h"
 #include "ClockSys.h"
 
-#define HUB_IP 0xC0A80102
+//#define HUB_IP 0xC0A80102
 #define RESOLUTION 16384
 #define Vref 3.3
 #define SAMPLE_LENGTH       128
@@ -88,6 +88,7 @@ float norm_voltage;
 _controller_t ctrl_info;
 _device_t alarm_info;
 uint32_t FIREALARM_IP;
+uint32_t HUB_IP;
 _controller_t dummy_struc;
 
 void floatToArray(float n, char *str, int decimal_places);
@@ -125,8 +126,9 @@ void main(void) {
     alarm_info.curr1 = 0;
     alarm_info.curr2 = 0;
     alarm_info.fire_reading = 0;
-    ctrl_info.ctrl_acknowledged_fire = false;
-    ctrl_info.ctrl_acknowledged_meter = false;
+    ctrl_info.fire_ack = false;
+    ctrl_info.hub_req = false;
+    ctrl_info.meter_ack = false;
 
     /* Initialize SPI to be used with WiFi */
     spi_Open(0,0);
@@ -134,7 +136,26 @@ void main(void) {
     initCC3100(Client);
     FIREALARM_IP = getLocalIP();
 
-
+    /*uint16_t x = 0;
+    bool wifiConnected = false;
+    while (!wifiConnected) {
+        ReceiveData(ctrl_ptr, sizeof(ctrl_info));
+        if (ctrl_info.hub_req) {
+            wifiConnected = true;
+            HUB_IP = ctrl_info.IPaddr;
+            ctrl_info.fire_ack = true;
+            ctrl_info.IPaddr = FIREALARM_IP;
+        }
+    }
+    for (x = 0; x < 10; x++) {
+        SendData(ctrl_ptr, HUB_IP, sizeof(ctrl_info));
+        _delay(30);
+        ReceiveData(ctrl_ptr, sizeof(ctrl_info));
+        if (ctrl_info.hub_req) {
+            break;
+        }
+    }*/
+    HUB_IP = 0xC0A80102;
 
     /* Initialize ADC to measure Voltage */
     init_fireAlarm_ADC();
@@ -149,7 +170,7 @@ void main(void) {
 
 
         char *voltage_str = malloc(10);
-        norm_voltage = (float)(alarm_info.voltage * Vref) / (float)RESOLUTION;
+        norm_voltage = (float)(alarm_info.fire_reading * Vref) / (float)RESOLUTION;
         norm_voltage += OFFSET;
         floatToArray(norm_voltage, voltage_str, 3);
         LCD_setCursor(2,0);
@@ -158,7 +179,7 @@ void main(void) {
 
 
         if (transmit) {
-            //SendData(alarm_ptr, HUB_IP, sizeof(alarm_info));
+            SendData(alarm_ptr, HUB_IP, sizeof(alarm_info));
             alarm_info.fire_requesting = false;
             /*snprintf(test.txString, 70, "V = %d curr1 = %d curr2 = %d\r\n",
                      alarm_info.voltage, alarm_info.curr1, alarm_info.curr2);
@@ -197,7 +218,7 @@ void ADC14_IRQHandler(void) {
             i = 0;
             voltage_buffer /= SAMPLE_LENGTH;
             transmit = true;
-            alarm_info.voltage = voltage_buffer;
+            alarm_info.fire_reading = voltage_buffer;
             alarm_info.fire_requesting = true;
             voltage_buffer = 0;
         }
